@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "main": "npx ts-node main.ts"
+  },
+  "dependencies": {
+    "playwright": "^1.36.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.5"
+  }
+}
