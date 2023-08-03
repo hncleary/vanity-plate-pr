@@ -11,9 +11,9 @@ const { chromium } = require('playwright');
     const context: BrowserContext = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' + ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36' }); 
     // Navigate to a website - and then do something
 
-    const handlesToFetch: string[] = ['Google', 'MrBeast', 'Smosh', 'Cyranek'];
+    // const handlesToFetch: string[] = ['Google', 'MrBeast', 'Smosh', 'Cyranek'];
     // const handlesToFetch: string[] = ['Cyranek', 'Cyrakek', 'StaticStudio_', 'CyranekDelta', 'MasterSheesh', 'Avalon_'];
-    // const handlesToFetch: string[] = ['Cyranek'];
+    const handlesToFetch: string[] = ['Cyranek'];
     const statsList: YtStats[] = [];
     for(const handle of handlesToFetch) { 
         
@@ -30,7 +30,7 @@ const { chromium } = require('playwright');
     })
 
     // TODO
-    // [ ] youtube
+    // [x] youtube
     // [ ] tik tok
     // [ ] instagram
     // [ ] twitter
@@ -38,7 +38,11 @@ const { chromium } = require('playwright');
     // [ ] spotify
     // [ ] newgrounds
     // [ ] threads (?)
-    // 
+    
+    // TODO - Add link to page for each platform & account retrieved from
+    // TODO - Add last time updated
+    // TODO - Create folder system for multiple vanity pages
+    // TODO - Create custom license plate generator
 
     // Close the headless browser
     await browser.close(); 
