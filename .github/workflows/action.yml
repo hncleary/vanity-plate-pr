@@ -17,3 +17,8 @@ jobs:
         run: npm ci
       - name: Test Code
         run: npm run main
+      - name: Archive output json
+        uses: actions/upload-artifact@v3
+        with:
+          name: json-output
+          path: output.json
