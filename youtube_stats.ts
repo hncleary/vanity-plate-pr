@@ -1,24 +1,28 @@
 import { BrowserContext, Page } from "playwright";
+import { convertAbbreviateNumberStr } from "./abbrev_num_convert";
+import { getBase64ImageFromUrl } from "./base64_url_img_fetch";
 
 export class YtStats { 
-    channelName: string = '';
-    channelHandle: string = ';'
-    channelViews: number = 0;
-    channelSubs: number = 0;
-    channelIconUrl: string = '';
-    channelIcon: string = '';
+    timeRetrieved: number = 0;
+    link: string = '';
+    displayName: string = '';
+    handle: string = ';'
+    totalViews: number = 0;
+    subscribers: number = 0;
+    iconUrl: string = '';
+    iconBas64: string = '';
 
     public print() { 
-        console.log(this.channelName + ' Info:');
-        console.log('Handle (@): ' + this.channelHandle);
-        console.log('Total Views: ' + this.channelViews);
-        console.log('Total Subscribers: ' + this.channelSubs);
+        console.log('YouTube ' + this.displayName + ' Info:');
+        console.log('Handle (@): ' + this.handle);
+        console.log('Total Views: ' + this.totalViews);
+        console.log('Total Subscribers: ' + this.subscribers);
     }
 }
 
 
 /** Get an object containing info and statistics given a browser context and channel @ */
-export async function getYoutubeStats(context: BrowserContext, channelHandle: string) { 
+export async function getYoutubeStats(context: BrowserContext, channelHandle: string): Promise<YtStats> { 
     const urlExt: string = `/@${channelHandle}/about`;
     const content: string = await getYoutubePageContent(context, urlExt);
     const channelName: string = getDisplayNameFromPageContent(content);
@@ -27,16 +31,18 @@ export async function getYoutubeStats(context: BrowserContext, channelHandle: st
     const iconUrl: string = getImageUrlFromPageContent(content);
     const iconBase64: string = await getBase64ImageFromUrl(iconUrl);
     const stats = new YtStats();
-    stats.channelName = channelName;
-    stats.channelHandle = channelHandle;
-    stats.channelViews = views;
-    stats.channelSubs = subs;
-    stats.channelIconUrl = iconUrl;
-    stats.channelIcon = iconBase64;
+    stats.link = `https://www.youtube.com/@${channelHandle}/`
+    stats.displayName = channelName;
+    stats.handle = channelHandle;
+    stats.totalViews = views;
+    stats.subscribers = subs;
+    stats.iconUrl = iconUrl;
+    stats.iconBas64 = iconBase64;
+    stats.timeRetrieved = new Date().getTime();
     return stats;
 }
 
-
+/** Retrieve the HTML content on a youtube channel page */
 async function getYoutubePageContent(context: BrowserContext, urlExtension: string): Promise<string> { 
     const page: Page = await context.newPage(); 
     const baseUrl = 'https://www.youtube.com';
@@ -47,6 +53,7 @@ async function getYoutubePageContent(context: BrowserContext, urlExtension: stri
     return content;
 }
 
+/** Given the entire HTML content of a channel's about page, return their total views */
 function getViewsFromPageContent(htmlContent: string): number { 
     const regex = /<yt-formatted-string.*<\/yt-formatted-string>/gm;
     const matches = htmlContent.match(regex);
@@ -61,8 +68,8 @@ function getViewsFromPageContent(htmlContent: string): number {
     }
     return -1;
 }
-
-function getSubsFromPageContent(htmlContent: string) { 
+/** Given the entire HTML content of a channel's about page, return their total subscribers */
+function getSubsFromPageContent(htmlContent: string): number { 
     const multipliers: string[] = ["", "k", "m", "b"]; // subscriber count are abbreviated with at 1K, 1M : use these to multiply back to original values
     const regex = /<yt-formatted-string id="subscriber-count".*<\/yt-formatted-string>/gm;
     const matches = htmlContent.match(regex);
@@ -70,20 +77,14 @@ function getSubsFromPageContent(htmlContent: string) {
         for(const match of matches) { 
             if(match.toLowerCase().includes('subscribers')) { 
                 const subsTxt: string = match.split('>')[1].split('<')[0];
-                const subsNumTxt = subsTxt.split(' ')[0]
-                const subs: number = parseFloat(subsNumTxt.replace(/,/g, ''));
-                let subMult = '';
-                if(subsNumTxt.split(subs.toString()).length > 1) { 
-                    subMult = subsNumTxt.split(subs.toString())[1].toLowerCase();
-                }
-                const multiplierFactor = 1000**multipliers.indexOf(subMult); // 1000 to the power of the index of the multiplier n*1000^0, n**1000^1, n*1000^2
-                return subs * multiplierFactor;
+                const subsNumTxt = subsTxt.split(' ')[0];
+                return convertAbbreviateNumberStr(subsNumTxt);
             }
         }
     }
     return -1;
 }
-
+/** Given the entire HTML content of a channel's about page, return their channel display name */
 function getDisplayNameFromPageContent(htmlContent: string): string {
     const regex = /<yt-formatted-string.*ytd-channel-name.*<\/yt-formatted-string>/gm;
     const matches = htmlContent.match(regex);
@@ -95,7 +96,7 @@ function getDisplayNameFromPageContent(htmlContent: string): string {
     }
     return '';
 } 
-
+/** Given the entire HTML content of a channel's about page, return their channel avatar image url */
 function getImageUrlFromPageContent(htmlContent: string): string { 
     const regex = /<img.*><ytd-channel-avatar-editor.*id="avatar-editor".*>.*<\/ytd-channel-avatar-editor>/gm;
     const matches = htmlContent.match(regex);
@@ -113,9 +114,3 @@ function getImageUrlFromPageContent(htmlContent: string): string {
     return '';
 }
 
-export async function getBase64ImageFromUrl(imgUrl: string): Promise<string> { 
-    const fetchImageUrl = await fetch(imgUrl);
-    const responseArrBuffer = await fetchImageUrl.arrayBuffer();
-    const toBase64 = `data:${ fetchImageUrl.headers.get('Content-Type') || 'image/png' };base64,${Buffer.from(responseArrBuffer).toString('base64')}`;
-    return toBase64;
-}

@@ -1,5 +1,6 @@
 import { BrowserContext, Page } from "playwright";
 import { getYoutubeStats, YtStats } from "./youtube_stats";
+import { getInstagramStats, InstagramStats } from "./instagram_stats";
 const fs = require('fs') // Built-in filesystem package for Node.j
 
 
@@ -13,33 +14,45 @@ const { chromium } = require('playwright');
 
     // const handlesToFetch: string[] = ['Google', 'MrBeast', 'Smosh', 'Cyranek'];
     // const handlesToFetch: string[] = ['Cyranek', 'Cyrakek', 'StaticStudio_', 'CyranekDelta', 'MasterSheesh', 'Avalon_'];
-    const handlesToFetch: string[] = ['Cyranek'];
-    const statsList: YtStats[] = [];
-    for(const handle of handlesToFetch) { 
-        
-        const stats = await getYoutubeStats(context, handle);
-        stats.print();
+    
+    // const youTubeHandlesToFetch: string[] = ['Cyranek'];
+    // const youtubeStatsList: YtStats[] = [];
+    // for(const handle of youTubeHandlesToFetch) { 
+    //     const ytStats = await getYoutubeStats(context, handle);
+    //     ytStats.print();
+    //     console.log('----------------');
+    //     youtubeStatsList.push(ytStats);
+    // }
+
+    // // Stringify retrieved data, then save to .json format
+    // const data = JSON.stringify(youtubeStatsList);
+    // fs.writeFile('output.json', data, (err) => {
+    //     if (err) throw err;
+    // })
+
+    
+    const instaHandlesToFetch: string[] = ['cyranek_'];
+    const instaStatsList: InstagramStats[] = [];
+    for(const handle of instaHandlesToFetch) { 
+        const instaStats: InstagramStats = await getInstagramStats(context, handle);
+        instaStats.print();
         console.log('----------------');
-        statsList.push(stats);
+        instaStatsList.push(instaStats);
     }
 
-    // Stringify retrieved data, then save to .json format
-    const data = JSON.stringify(statsList);
-    fs.writeFile('output.json', data, (err) => {
-        if (err) throw err;
-    })
-
     // TODO
-    // [x] youtube
-    // [ ] tik tok
-    // [ ] instagram
-    // [ ] twitter
-    // [ ] soundcloud 
-    // [ ] spotify
-    // [ ] newgrounds
-    // [ ] threads (?)
+    // [x] YouTube
+    // [ ] Tik Tok
+    // [ ] Instagram
+    // [ ] Twitter
+    // [ ] SoundCloud 
+    // [ ] Spotify
+    // [ ] Newgrounds
+    // [ ] Threads (?)
+    // [ ] Twitch
+    // [ ] DeviantArt (?)
+    // [ ] Tumblr (?)
     
-    // TODO - Add link to page for each platform & account retrieved from
     // TODO - Add last time updated
     // TODO - Create folder system for multiple vanity pages
     // TODO - Create custom license plate generator
