@@ -1,6 +1,6 @@
 import { BrowserContext, Page } from "playwright";
-import { convertAbbreviateNumberStr } from "./abbrev_num_convert";
-import { getBase64ImageFromUrl } from "./base64_url_img_fetch";
+import { convertAbbreviateNumberStr } from "../helper_functions/abbrev_num_convert";
+import { getBase64ImageFromUrl } from "../helper_functions/base64_url_img_fetch";
 
 export class YtStats { 
     timeRetrieved: number = 0;

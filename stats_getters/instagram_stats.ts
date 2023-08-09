@@ -1,5 +1,6 @@
 import { BrowserContext, Page } from "playwright";
-import { convertAbbreviateNumberStr } from "./abbrev_num_convert";
+import { convertAbbreviateNumberStr } from "../helper_functions/abbrev_num_convert";
+import { getBase64ImageFromUrl } from "../helper_functions/base64_url_img_fetch";
 const fs = require('fs') // Built-in filesystem package for Node.j
 
 export class InstagramStats { 
@@ -24,16 +25,13 @@ export class InstagramStats {
 export async function getInstagramStats(context: BrowserContext, handle: string): Promise<InstagramStats> { 
     const urlExt = `/${handle}`;
     const content: string = await getInstagramPageContent(context, urlExt);
-    fs.writeFile('insta-content.txt', content, (err) => {
-        if (err) throw err;
-    })
 
-    const followers = getFollowersFromContent(content);
-    const following = getFollowingFromContent(content);
-    const postCount = getPostCountFromContent(content);
-    const displayName = getDisplayNameFromContent(content, handle);
-    const iconUrl = getImageUrlFromPageContent(content);
-    const iconBase64 = '';
+    const followers: number = getFollowersFromContent(content);
+    const following: number = getFollowingFromContent(content);
+    const postCount: number = getPostCountFromContent(content);
+    const displayName: string = getDisplayNameFromContent(content, handle);
+    const iconUrl: string = getImageUrlFromPageContent(content);
+    const iconBase64: string = await getBase64ImageFromUrl(iconUrl);
 
     const stats =  new InstagramStats();
     stats.timeRetrieved = new Date().getTime();
@@ -47,6 +45,7 @@ export async function getInstagramStats(context: BrowserContext, handle: string)
     return stats;
 }
 
+/** Retrieve the HTML content on a instagram account page */
 async function getInstagramPageContent(context: BrowserContext, urlExtension: string): Promise<string> { 
     const page: Page = await context.newPage(); 
     const baseUrl = 'https://www.instagram.com';
@@ -54,11 +53,8 @@ async function getInstagramPageContent(context: BrowserContext, urlExtension: st
     await page.goto(fullUrl); 
     // Find selector to await if issues arise with this part of the code (?)
     // await page.waitForSelector('yt-formatted-string#subscriber-count')
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(2000);
     const content = await page.content();
-    fs.writeFile('instagram_page.html', content, (err) => {
-        if (err) throw err;
-    })
     return content;
 }
 /** Given the entire HTML content of a user's instagram page, return the description containing much of the needed user information*/
@@ -94,23 +90,35 @@ function getDisplayNameFromContent(content: string, handle: string): string {
     const handleSplitter = `(@${handle})`;
     return descLine.split('from ')[1].split(handleSplitter)[0].split(' ').join('');
 }
-
-/** Given an entire page of HTML content - not currently in use for instagram stats */
-function getBase64ImageFromContent(content: string): string[] { 
-    const regex = /src="(data:image\/[^;]+;base64[^"]+)"/gm;
-    const matches = content.match(regex);
-    console.log(matches);
-    const base64Imgs: string[] = [];
+/** Given the entire HTML content of a user's instagram page, return the url for their profile image */
+function getImageUrlFromPageContent(htmlContent: string): string { 
+    const regex = /<img alt=".*'s profile picture".*">/gm;
+    const matches = htmlContent.match(regex);
     if(!!matches) { 
         for(const match of matches) { 
-            const base64 = match.split('src="')[1].split('"')[0].split(' ').join('');;
-            base64Imgs.push(base64);
+            const urlRegex = /src=".*"/gm;
+            const urlMatches = match.match(urlRegex);
+            if(!!urlMatches && urlMatches?.length > 0) { 
+                const imgUrl = urlMatches[0].split('"')[1].split('amp;').join('');
+                return imgUrl;
+            }
+            
         }
     }
-    return base64Imgs;
-}
-
-function getImageUrlFromPageContent(htmlContent: string): string { 
-    const regex = /<img/gm;
     return '';
 }
+
+/** Given an entire page of HTML content - not currently in use for instagram stats */
+// function getBase64ImageFromContent(content: string): string[] { 
+//     const regex = /src="(data:image\/[^;]+;base64[^"]+)"/gm;
+//     const matches = content.match(regex);
+//     console.log(matches);
+//     const base64Imgs: string[] = [];
+//     if(!!matches) { 
+//         for(const match of matches) { 
+//             const base64 = match.split('src="')[1].split('"')[0].split(' ').join('');;
+//             base64Imgs.push(base64);
+//         }
+//     }
+//     return base64Imgs;
+// }
