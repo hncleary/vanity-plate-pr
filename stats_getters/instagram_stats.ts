@@ -31,7 +31,13 @@ export async function getInstagramStats(context: BrowserContext, handle: string)
     const postCount: number = getPostCountFromContent(content);
     const displayName: string = getDisplayNameFromContent(content, handle);
     const iconUrl: string = getImageUrlFromPageContent(content);
-    const iconBase64: string = await getBase64ImageFromUrl(iconUrl);
+
+    let iconBase64: string = '';
+    try {
+        iconBase64 = await getBase64ImageFromUrl(iconUrl);
+    } catch { 
+        console.error('Unable to fetch image from ' + iconUrl);
+    }
 
     const stats =  new InstagramStats();
     stats.timeRetrieved = new Date().getTime();
@@ -52,26 +58,42 @@ async function getInstagramPageContent(context: BrowserContext, urlExtension: st
     const fullUrl = baseUrl + urlExtension;
     await page.goto(fullUrl); 
     // Find selector to await if issues arise with this part of the code (?)
-    // await page.waitForSelector('yt-formatted-string#subscriber-count')
-    await page.waitForTimeout(2000);
+    // await page.waitForSelector('main')
+    await page.waitForTimeout(60000);
     const content = await page.content();
+
+    fs.writeFile('instagram.html', content, (err) => {
+        if (err) throw err;
+    })
+
     return content;
 }
 /** Given the entire HTML content of a user's instagram page, return the description containing much of the needed user information*/
 function getDescriptionFromContent(content: string): string { 
-    const regex = /<meta\n*[ ]*property="og:description" content="[^>]*">/gm;
-    const matches = content.match(regex);
-    if(!!matches) { 
-        return matches[0];
+    try { 
+        const regex = /<meta\n*[ ]*property="og:description" content="[^>]*">/gm;
+        const matches = content.match(regex);
+        if(!!matches) { 
+            return matches[0];
+        }
+    } catch { 
+        console.error('unable to get description from content');
+        console.log(content);
     }
     return '';
 }
 /** Given the entire HTML content of a user's instagram page, return their follower count */
 function getFollowersFromContent(content: string): number { 
-    const descLine = getDescriptionFromContent(content);
-    const abbrevNumStr = descLine.split('content="')[1].split('Followers')[0];
-    return convertAbbreviateNumberStr(abbrevNumStr);
+    try {
+        const descLine = getDescriptionFromContent(content);
+        const abbrevNumStr = descLine.split('content="')[1].split('Followers')[0];
+        return convertAbbreviateNumberStr(abbrevNumStr);
+    } catch { 
+        console.error('unable to get number from content');
+        console.log(content);
+    }
 }
+    
 /** Given the entire HTML content of a user's instagram page, return their following count */
 function getFollowingFromContent(content: string): number { 
     const descLine = getDescriptionFromContent(content);
