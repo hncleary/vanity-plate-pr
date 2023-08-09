@@ -30,15 +30,15 @@ const { chromium } = require('playwright');
     //     if (err) throw err;
     // })
 
-    /** Instagram Stats Getter Test */
-    const instaHandlesToFetch: string[] = ['cyranek_'];
-    const instaStatsList: InstagramStats[] = [];
-    for(const handle of instaHandlesToFetch) { 
-        const instaStats: InstagramStats = await getInstagramStats(context, handle);
-        instaStats.print();
-        console.log('----------------');
-        instaStatsList.push(instaStats);
-    }
+    // /** Instagram Stats Getter Test */
+    // const instaHandlesToFetch: string[] = ['cyranek_', 'huntercleary_'];
+    // const instaStatsList: InstagramStats[] = [];
+    // for(const handle of instaHandlesToFetch) { 
+    //     const instaStats: InstagramStats = await getInstagramStats(context, handle);
+    //     instaStats.print();
+    //     console.log('----------------');
+    //     instaStatsList.push(instaStats);
+    // }
 
     // TODO
     // [x] YouTube
