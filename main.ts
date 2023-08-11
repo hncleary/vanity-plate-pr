@@ -1,6 +1,7 @@
 import { BrowserContext, Page } from "playwright";
 import { getYoutubeStats, YtStats } from "./stats_getters/youtube_stats";
 import { getInstagramStats, InstagramStats } from "./stats_getters/instagram_stats";
+import { SpotifyStats, getSpotifyStats } from "./stats_getters/spotify_stats";
 const fs = require('fs') // Built-in filesystem package for Node.j
 
 
@@ -15,14 +16,14 @@ const { chromium } = require('playwright');
     // const handlesToFetch: string[] = ['Cyranek', 'Cyrakek', 'StaticStudio_', 'CyranekDelta', 'MasterSheesh', 'Avalon_'];
     
     /** YouTube Stats Getter Test */
-    const youTubeHandlesToFetch: string[] = ['Cyranek'];
-    const youtubeStatsList: YtStats[] = [];
-    for(const handle of youTubeHandlesToFetch) { 
-        const ytStats = await getYoutubeStats(context, handle);
-        ytStats.print();
-        console.log('----------------');
-        youtubeStatsList.push(ytStats);
-    }
+    // const youTubeHandlesToFetch: string[] = ['Cyranek'];
+    // const youtubeStatsList: YtStats[] = [];
+    // for(const handle of youTubeHandlesToFetch) { 
+    //     const ytStats = await getYoutubeStats(context, handle);
+    //     ytStats.print();
+    //     console.log('----------------');
+    //     youtubeStatsList.push(ytStats);
+    // }
 
     // // Stringify retrieved data, then save to .json format
     // const data = JSON.stringify(youtubeStatsList);
@@ -40,13 +41,35 @@ const { chromium } = require('playwright');
     //     instaStatsList.push(instaStats);
     // }
 
+    // /** Spotify Stats Getter Test */
+    // const spotifyArtistsToFetch: string[] = ['69tiO1fG8VWduDl3ji2qhI', '6ltzsmQQbmdoHHbLZ4ZN25', '6YeB9qnbI47owfAXWhctih'];
+    // const spotifyStatsList: SpotifyStats[] = [];
+    // for(const artist of spotifyArtistsToFetch) { 
+    //     const spotifyStats: SpotifyStats = await getSpotifyStats(context, artist);
+    //     spotifyStats.print();
+    //     console.log('----------------');
+    //     spotifyStatsList.push(spotifyStats);
+    // }
+
+    /** Newgrounds Stats Getter Test */
+    const spotifyArtistsToFetch: string[] = ['69tiO1fG8VWduDl3ji2qhI', '6ltzsmQQbmdoHHbLZ4ZN25', '6YeB9qnbI47owfAXWhctih'];
+    const spotifyStatsList: SpotifyStats[] = [];
+    for(const artist of spotifyArtistsToFetch) { 
+        const spotifyStats: SpotifyStats = await getSpotifyStats(context, artist);
+        spotifyStats.print();
+        console.log('----------------');
+        spotifyStatsList.push(spotifyStats);
+    }
+
+
+
     // TODO
     // [x] YouTube
     // [ ] Tik Tok
     // [x] Instagram
     // [ ] Twitter
     // [ ] SoundCloud 
-    // [ ] Spotify
+    // [x] Spotify
     // [ ] Newgrounds
     // [ ] Threads (?)
     // [ ] Twitch
