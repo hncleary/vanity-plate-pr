@@ -3,7 +3,6 @@ import { convertAbbreviateNumberStr } from "../helper_functions/abbrev_num_conve
 import { getBase64ImageFromUrl } from "../helper_functions/base64_url_img_fetch";
 
 
-// we want to follow the same concepts inside of the tiktok stats as we do with the instagram stats
 export class TiktokStats {
     timeRetrieved: number = 0;
     link: string = "";
@@ -23,3 +22,5 @@ export class TiktokStats {
         console.log('Total Following: ' + this.followingCount);
     }
 }
+
+// TODO - follow stats retrieval pattern from instagram_stats.ts

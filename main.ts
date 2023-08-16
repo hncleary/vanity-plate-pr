@@ -15,7 +15,7 @@ const { chromium } = require('playwright');
     // const handlesToFetch: string[] = ['Google', 'MrBeast', 'Smosh', 'Cyranek'];
     // const handlesToFetch: string[] = ['Cyranek', 'Cyrakek', 'StaticStudio_', 'CyranekDelta', 'MasterSheesh', 'Avalon_'];
     
-    /** YouTube Stats Getter Test */
+    // /** YouTube Stats Getter Test */
     // const youTubeHandlesToFetch: string[] = ['Cyranek'];
     // const youtubeStatsList: YtStats[] = [];
     // for(const handle of youTubeHandlesToFetch) { 
@@ -51,35 +51,15 @@ const { chromium } = require('playwright');
     //     spotifyStatsList.push(spotifyStats);
     // }
 
-    /** Newgrounds Stats Getter Test */
-    const spotifyArtistsToFetch: string[] = ['69tiO1fG8VWduDl3ji2qhI', '6ltzsmQQbmdoHHbLZ4ZN25', '6YeB9qnbI47owfAXWhctih'];
-    const spotifyStatsList: SpotifyStats[] = [];
-    for(const artist of spotifyArtistsToFetch) { 
-        const spotifyStats: SpotifyStats = await getSpotifyStats(context, artist);
-        spotifyStats.print();
-        console.log('----------------');
-        spotifyStatsList.push(spotifyStats);
-    }
-
-
-
-    // TODO
-    // [x] YouTube
-    // [ ] Tik Tok
-    // [x] Instagram
-    // [ ] Twitter
-    // [ ] SoundCloud 
-    // [x] Spotify
-    // [ ] Newgrounds
-    // [ ] Threads (?)
-    // [ ] Twitch
-    // [ ] DeviantArt (?)
-    // [ ] Tumblr (?)
-    
-    // TODO - Create additional repo for angular site
-    // TODO - Create additional repo for data storage
-    // TODO - Create folder system for multiple vanity pages
-    // TODO - Create custom license plate generator
+    // /** Newgrounds Stats Getter Test */
+    // const spotifyArtistsToFetch: string[] = ['69tiO1fG8VWduDl3ji2qhI', '6ltzsmQQbmdoHHbLZ4ZN25', '6YeB9qnbI47owfAXWhctih'];
+    // const spotifyStatsList: SpotifyStats[] = [];
+    // for(const artist of spotifyArtistsToFetch) { 
+    //     const spotifyStats: SpotifyStats = await getSpotifyStats(context, artist);
+    //     spotifyStats.print();
+    //     console.log('----------------');
+    //     spotifyStatsList.push(spotifyStats);
+    // }
 
     // Close the headless browser
     await browser.close(); 
