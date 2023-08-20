@@ -2,6 +2,7 @@ import { BrowserContext, Page } from "playwright";
 import { getYoutubeStats, YtStats } from "./stats_getters/youtube_stats";
 import { getInstagramStats, InstagramStats } from "./stats_getters/instagram_stats";
 import { SpotifyStats, getSpotifyStats } from "./stats_getters/spotify_stats";
+import { NewgroundsStats, getNewgroundsStats } from "./stats_getters/newgrounds_stats";
 const fs = require('fs') // Built-in filesystem package for Node.j
 
 
@@ -51,15 +52,15 @@ const { chromium } = require('playwright');
     //     spotifyStatsList.push(spotifyStats);
     // }
 
-    // /** Newgrounds Stats Getter Test */
-    // const spotifyArtistsToFetch: string[] = ['69tiO1fG8VWduDl3ji2qhI', '6ltzsmQQbmdoHHbLZ4ZN25', '6YeB9qnbI47owfAXWhctih'];
-    // const spotifyStatsList: SpotifyStats[] = [];
-    // for(const artist of spotifyArtistsToFetch) { 
-    //     const spotifyStats: SpotifyStats = await getSpotifyStats(context, artist);
-    //     spotifyStats.print();
-    //     console.log('----------------');
-    //     spotifyStatsList.push(spotifyStats);
-    // }
+    /** Newgrounds Stats Getter Test */
+    const newgroundsUsersToFetch: string[] = ['cyranek'];
+    const newgroundsStatsList: NewgroundsStats[] = [];
+    for(const artist of newgroundsUsersToFetch) { 
+        const newgroundsStats: NewgroundsStats = await getNewgroundsStats(context, artist);
+        newgroundsStats.print();
+        console.log('----------------');
+        newgroundsStatsList.push(newgroundsStats);
+    }
 
     // Close the headless browser
     await browser.close(); 
