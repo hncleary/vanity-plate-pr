@@ -20,6 +20,15 @@ export class YtStats {
     }
 }
 
+/** Given an array of channel handles, return an array of corresponding youtube stats objects */
+export async function getYoutubeStatsArr(context: BrowserContext, channelHandles: string[]): Promise<YtStats[]> { 
+    const youtubeStats: YtStats[] = [];
+    for(const handle of channelHandles) { 
+        const data = await getYoutubeStats(context, handle);
+        youtubeStats.push(data);
+    }
+    return youtubeStats;
+}
 
 /** Get an object containing info and statistics given a browser context and channel @ */
 export async function getYoutubeStats(context: BrowserContext, channelHandle: string): Promise<YtStats> { 

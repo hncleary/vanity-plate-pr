@@ -8,7 +8,7 @@ export class SpotifyStats {
     artistId: string = '';
     displayName: string = '';
     monthlyListeners: number = 0;
-    // TODO (?) - Requires Spotify API integration
+    // TODO (?) - Likely requires Spotify API integration
     // followers: number = 0;
     // iconUrl: string = '';
     // iconBase64: string = '';
@@ -19,6 +19,17 @@ export class SpotifyStats {
     }
 }
 
+/** Given an array of artist ids, return an array of corresponding spotify stats objects */
+export async function getSpotifyStatsArr(context: BrowserContext, artistIds: string[]): Promise<SpotifyStats[]> { 
+    const spotifyStats: SpotifyStats[] = [];
+    for(const id of artistIds) { 
+        const data = await getSpotifyStats(context, id);
+        spotifyStats.push(data);
+    }
+    return spotifyStats;
+}
+
+/** Get an object containing info and statistics given a browser context and artist id */
 export async function getSpotifyStats(context: BrowserContext, artistId: string): Promise<SpotifyStats> { 
     const content = await getSpotifyPageContent(context, artistId);
     const monthlyListeners = getMonthlyListenersFromPageContents(content);

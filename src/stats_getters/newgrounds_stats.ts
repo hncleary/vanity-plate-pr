@@ -26,6 +26,16 @@ export class NewgroundsStats {
     }
 }
 
+/** Given an array of newgrounds account usernames, return an array of corresponding newgrounds stats objects */
+export async function getNewgroundsStatsArr(context: BrowserContext, usernames: string[]): Promise<NewgroundsStats[]> { 
+    const newgroundsStats: NewgroundsStats[] = [];
+    for(const name of usernames) { 
+        const data = await getNewgroundsStats(context, name);
+        newgroundsStats.push(data);
+    }
+    return newgroundsStats;
+}
+
 export async function getNewgroundsStats(context: BrowserContext, username: string): Promise<NewgroundsStats> { 
     const content: string = await getNewgroundsPageContent(context, username);
     const counts: Map<string, number> = getPostCountsFromPageContent(content);

@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "main": "npx ts-node main.ts"
+    "main": "npx ts-node src/main.ts"
   },
   "dependencies": {
     "fs": "^0.0.1-security",

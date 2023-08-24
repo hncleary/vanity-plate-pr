@@ -22,6 +22,17 @@ export class InstagramStats {
     }
 }
 
+/** Get an array of objects containing instagram info and statistics given a browser context and account @'s */
+export async function getInstagramStatsArr(context: BrowserContext, handles: string[]): Promise<InstagramStats[]> { 
+    const instagramStats: InstagramStats[] = [];
+    for(const handle of handles) { 
+        const data = await getInstagramStats(context, handle);
+        instagramStats.push(data);
+    }
+    return instagramStats;
+}
+
+/** Get an object containing instagram info and statistics given a browser context and account @ */
 export async function getInstagramStats(context: BrowserContext, handle: string): Promise<InstagramStats> { 
     const urlExt = `/${handle}`;
     const content: string = await getInstagramPageContent(context, urlExt);
