@@ -107,19 +107,24 @@ function getDisplayNameFromPageContent(htmlContent: string): string {
 } 
 /** Given the entire HTML content of a channel's about page, return their channel avatar image url */
 function getImageUrlFromPageContent(htmlContent: string): string { 
-    const regex = /<img.*><ytd-channel-avatar-editor.*id="avatar-editor".*>.*<\/ytd-channel-avatar-editor>/gm;
-    const matches = htmlContent.match(regex);
-    if(!!matches) { 
-        for(const match of matches) { 
-            const urlRegex = /src=".*"/gm;
-            const urlMatches = match.match(urlRegex);
-            if(!!urlMatches && urlMatches?.length > 0) { 
-                const imgUrl = urlMatches[0].split('"')[1];
-                return imgUrl;
+    try { 
+        const regex = /<img.*><ytd-channel-avatar-editor.*id="avatar-editor".*>.*<\/ytd-channel-avatar-editor>/gm;
+        const matches = htmlContent.match(regex);
+        if(!!matches) { 
+            for(const match of matches) { 
+                const urlRegex = /src=".*"/gm;
+                const urlMatches = match.match(urlRegex);
+                if(!!urlMatches && urlMatches?.length > 0) { 
+                    const imgUrl = urlMatches[0].split('"')[1];
+                    return imgUrl;
+                }
+                
             }
-            
         }
+    } catch(e) { 
+        console.error('Unable to get image url from page', e)
     }
+    
     return '';
 }
 

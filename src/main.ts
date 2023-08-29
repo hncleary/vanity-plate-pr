@@ -1,9 +1,8 @@
 import { BrowserContext } from "playwright";
 import { VanityPlateProfile, VanityPlateProfileStats, getProfileStats } from "./profile_data_process/profile_data";
+import { getProfileDefJsonsList, getFileContents, writeProfileStatsToJson } from "./helper_functions/def_files";
 const fs = require('fs') // Built-in filesystem package for Node.js
 const util = require('util');
-
-const readFile = util.promisify(fs.readFile);
 
 const { chromium } = require('playwright');
 (async () => { 
@@ -20,29 +19,9 @@ const { chromium } = require('playwright');
         // Fetch social stats for profile
         const profileStats: VanityPlateProfileStats = await getProfileStats(context, profile);
         // Write cumulative profile stats to .json
-        if(!!profile.id) { 
-            fs.writeFile(`./profile-defs/${profile.id}-stats.json`, JSON.stringify(profileStats), (err) => {
-                if (err) throw err;
-            })
-        }
+        await writeProfileStatsToJson(profile, profileStats);
     }
     // Close the headless browser
     await browser.close(); 
 })();
 
-// Get a list of json files within the profile/defs directory
-async function getProfileDefJsonsList(): Promise<string[]> {
-    const path = './profile-defs/';
-    const dir = await fs.promises.opendir(path)
-    const fileNames: string[] = [];
-    for await (const dirent of dir) {
-        fileNames.push(dirent.name);
-    }
-    return fileNames;
-}
-
-/** Get the string contents of a file given location and name */
-async function getFileContents(filename: string): Promise<string> { 
-    const data = await readFile(filename, 'utf8');
-    return data;
-} 
