@@ -6,7 +6,7 @@ export function convertAbbreviateNumberStr(abbrevNum: string): number {
     abbrevNum = abbrevNum.split(' ').join(''); 
     const num: number = parseFloat(abbrevNum.replace(/,/g, ''));
     let mult = '';
-    if(abbrevNum.split(num.toString()).length > 1) { 
+    if(!!abbrevNum && abbrevNum.split(num.toString()).length > 1) { 
         mult = abbrevNum.split(num.toString())[1].toLowerCase();
     }
     /** 1000 to the power of the index of the multiplier n*1000^0, n**1000^1, n*1000^2 */

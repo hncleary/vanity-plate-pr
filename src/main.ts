@@ -17,9 +17,12 @@ const { chromium } = require('playwright');
         const json: string = await getFileContents(`./profile-defs/${profileJson}`);
         const profile: VanityPlateProfile = JSON.parse(json);
         // Fetch social stats for profile
-        const profileStats: VanityPlateProfileStats = await getProfileStats(context, profile);
-        // Write cumulative profile stats to .json
-        await writeProfileStatsToJson(profile, profileStats);
+        if(!!profile.id) { 
+            console.log(`Getting stats for ${profile.id}`)
+            const profileStats: VanityPlateProfileStats = await getProfileStats(context, profile);
+            // Write cumulative profile stats to .json
+            await writeProfileStatsToJson(profile, profileStats);
+        }
     }
     // Close the headless browser
     await browser.close(); 

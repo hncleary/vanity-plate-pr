@@ -20,8 +20,8 @@ export class SoundCloudStats {
     }
 }
 
-/** Get an object containing info and statistics given a browser context and channel @ */
-export async function getYoutubeStats(context: BrowserContext, username: string): Promise<SoundCloudStats> { 
+/** Get an object containing info and statistics for a soundcloud profile given a browser context and username */
+export async function getSoundcloudStats(context: BrowserContext, username: string): Promise<SoundCloudStats> { 
     // TODO
     const stats = new SoundCloudStats();
     // TODO
