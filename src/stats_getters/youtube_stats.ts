@@ -6,7 +6,7 @@ export class YtStats {
     timeRetrieved: number = 0;
     link: string = '';
     displayName: string = '';
-    handle: string = ';'
+    handle: string = '';
     totalViews: number = 0;
     subscribers: number = 0;
     iconUrl: string = '';
