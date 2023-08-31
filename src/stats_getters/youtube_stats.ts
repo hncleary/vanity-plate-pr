@@ -113,7 +113,7 @@ function getImageUrlFromPageContent(htmlContent: string): string {
         if(!!matches) { 
             for(const match of matches) { 
                 const urlRegex = /src=".*"/gm;
-                const urlMatches = match.match(urlRegex);
+                const urlMatches: RegExpMatchArray = match.match(urlRegex);
                 if(!!urlMatches && urlMatches?.length > 0) { 
                     const imgUrl = urlMatches[0].split('"')[1];
                     return imgUrl;
