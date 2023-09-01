@@ -64,6 +64,7 @@ async function getNewgroundsPageContent(context: BrowserContext, username: strin
     const url = `https://${username}.newgrounds.com/fans`
     await page.goto(url); 
     const content = await page.content();
+    await page.close();
     return content;
 }
 

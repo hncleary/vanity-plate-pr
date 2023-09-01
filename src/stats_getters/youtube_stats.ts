@@ -59,6 +59,7 @@ async function getYoutubePageContent(context: BrowserContext, urlExtension: stri
     await page.goto(fullUrl); 
     await page.waitForSelector('yt-formatted-string#subscriber-count')
     const content = await page.content();
+    await page.close();
     return content;
 }
 

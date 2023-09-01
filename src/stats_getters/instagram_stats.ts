@@ -71,6 +71,7 @@ async function getInstagramPageContent(context: BrowserContext, urlExtension: st
     // Find selector to await if issues arise with this part of the code (?)
     await page.waitForSelector('main')
     const content = await page.content();
+    await page.close();
     return content;
 }
 /** Given the entire HTML content of a user's instagram page, return the description containing much of the needed user information*/

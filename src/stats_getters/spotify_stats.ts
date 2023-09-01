@@ -48,6 +48,7 @@ async function getSpotifyPageContent(context: BrowserContext, artistId: string):
     const url: string = `https://open.spotify.com/artist/${artistId}`;
     await page.goto(url); 
     const content = await page.content();
+    await page.close();
     return content;
 }
 /** Get json data object present in page contents */

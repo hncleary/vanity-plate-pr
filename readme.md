@@ -14,12 +14,12 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [ ] Tik Tok
     - [x] Instagram
     - [ ] Twitter
-    - [ ] SoundCloud 
+    - [x] SoundCloud 
     - [x] Spotify
     - [x] Newgrounds
     - [ ] Twitch
-    - [ ] Sketchfab
-    - [ ] Reddit
+    - [ ] Sketchfab (?)
+    - [ ] Reddit (?)
     - [ ] Facebook (?)
     - [ ] Cameo (?)
     - [ ] Billi Billi (?)
