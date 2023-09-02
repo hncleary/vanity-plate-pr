@@ -24,6 +24,20 @@ export class VanityPlateProfileStats {
     public spotifyStats: SpotifyStats[] = [];
     public newgroundsStats: NewgroundsStats[] = []
     public soundcloudStats: SoundCloudStats[] = [];
+
+    public static printAll(profileStats: VanityPlateProfileStats) { 
+        // Print All Stats
+        for(const key of Object.keys(profileStats)) { 
+            if(!!profileStats[key] && profileStats[key].length > 0 ) { 
+                for(const statObj of profileStats[key]) { 
+                    if(!!statObj?.print) { 
+                        statObj.print();
+                        console.log('-----------')
+                    }
+                }
+            }
+        }
+    }
 }
 
 /** Get all corresponding stats objects for a profile */

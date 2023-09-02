@@ -85,7 +85,7 @@ function getProfileImgUrlFromContent(content: string): string {
     return '';
 }
 function getFollowersFromContent(content: string): number { 
-    const regex = /<a href="\/soundcloud\/followers" rel="nofollow" class="infoStats__statLink sc-link-light sc-link-primary" title=".* followers">/gm
+    const regex = /<a href="\/.*\/followers" rel="nofollow" class="infoStats__statLink sc-link-light sc-link-primary" title=".* followers">/gm
     const matches = content.match(regex);
     if(!!matches) { 
         for(const match of matches) { 
@@ -96,7 +96,7 @@ function getFollowersFromContent(content: string): number {
     return 0;
 }
 function getFollowingFromContent(content: string): number { 
-    const regex = /<a href="\/soundcloud\/following" rel="nofollow" class="infoStats__statLink sc-link-light sc-link-primary" title="Following.*people">/gm
+    const regex = /<a href="\/.*\/following" rel="nofollow" class="infoStats__statLink sc-link-light sc-link-primary" title="Following.*people">/gm
     const matches = content.match(regex);
     if(!!matches) { 
         for(const match of matches) { 
@@ -107,7 +107,7 @@ function getFollowingFromContent(content: string): number {
     return 0;
 }
 function getTrackCountFromContent(content: string): number { 
-    const regex = /<a href="\/soundcloud\/tracks" rel="nofollow" class="infoStats__statLink sc-link-light sc-link-primary" title=".*tracks">/gm
+    const regex = /<a href="\/.*\/tracks" rel="nofollow" class="infoStats__statLink sc-link-light sc-link-primary" title=".*tracks">/gm
     const matches = content.match(regex);
     if(!!matches) { 
         for(const match of matches) { 

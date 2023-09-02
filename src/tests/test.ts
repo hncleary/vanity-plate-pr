@@ -17,19 +17,8 @@ const { chromium } = require('playwright');
     const testProfile: VanityPlateProfile = await getProfileJsonDef('test');
     const profileStats: VanityPlateProfileStats = await getProfileStats(context, testProfile);
     await writeProfileStatsToJson(testProfile, profileStats);
-
     // Print All Stats
-    for(const key of Object.keys(profileStats)) { 
-        if(!!profileStats[key] && profileStats[key].length > 0 ) { 
-            for(const statObj of profileStats[key]) { 
-                if(!!statObj?.print) { 
-                    statObj.print();
-                    console.log('-----------')
-                }
-            }
-        }
-    }
-    
+    VanityPlateProfileStats.printAll(profileStats);
     // Close the headless browser
     await browser.close(); 
 })();

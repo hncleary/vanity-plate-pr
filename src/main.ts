@@ -18,10 +18,15 @@ const { chromium } = require('playwright');
         const profile: VanityPlateProfile = JSON.parse(json);
         // Fetch social stats for profile
         if(!!profile.id) { 
-            console.log(`Getting stats for ${profile.id}`)
+            console.log(`[[Getting stats for ${profile.id}]]`)
+            console.log('-----------')
             const profileStats: VanityPlateProfileStats = await getProfileStats(context, profile);
             // Write cumulative profile stats to .json
             await writeProfileStatsToJson(profile, profileStats);
+            // Print all stats objects
+            VanityPlateProfileStats.printAll(profileStats);
+            console.log('===================');
+            console.log('===================');
         }
     }
     // Close the headless browser
