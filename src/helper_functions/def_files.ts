@@ -7,6 +7,12 @@ const readFile = util.promisify(fs.readFile);
 
 export const profileDefsPath: string = 'profile-defs'
 
+export async function writeHtmlToFile(filename: string, content: string): Promise<void> {
+    fs.writeFile(`${profileDefsPath}/${filename}.html`, content, (err) => {
+        if (err) throw err;
+    });
+}
+
 /** Given a profile definition and its respective stats object, write profile stats to file */
 export async function writeProfileStatsToJson(profile: VanityPlateProfile, stats: VanityPlateProfileStats): Promise<void> { 
     if(!!profile.id) { 

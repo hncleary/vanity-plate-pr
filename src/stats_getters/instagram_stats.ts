@@ -1,7 +1,6 @@
 import { BrowserContext, Page } from "playwright";
 import { convertAbbreviateNumberStr } from "../helper_functions/abbrev_num_convert";
 import { getBase64ImageFromUrl } from "../helper_functions/base64_url_img_fetch";
-const fs = require('fs') // Built-in filesystem package for Node.j
 
 export class InstagramStats { 
     timeRetrieved: number = 0;

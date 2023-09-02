@@ -1,6 +1,5 @@
-import { Browser, BrowserContext, Page } from "playwright";
+import {  BrowserContext, Page } from "playwright";
 import { getBase64ImageFromUrl } from "../helper_functions/base64_url_img_fetch";
-const fs = require('fs') // Built-in filesystem package for Node.js
 
 export class SoundCloudStats { 
     timeRetrieved: number = 0;

@@ -4,6 +4,7 @@ import { NewgroundsStats, getNewgroundsStatsArr } from "../stats_getters/newgrou
 import { SpotifyStats, getSpotifyStatsArr } from "../stats_getters/spotify_stats";
 import { YtStats, getYoutubeStatsArr } from "../stats_getters/youtube_stats";
 import { SoundCloudStats, getSoundcloudStatsArr } from "../stats_getters/soundcloud_stats";
+import { TwitterStats, getTwitterStatsArr } from "../stats_getters/twitter_stats";
 
 /** Profile definition defining lists of social identifiers */
 export class VanityPlateProfile {
@@ -15,6 +16,7 @@ export class VanityPlateProfile {
     public spotifyArtistIds: string[] = [];
     public newgroundsUsernames: string[] = [];
     public soundcloudUsernames: string[] = [];
+    public twitterHandles: string[] = [];
 }
 
 /** Object all stat object for a defined profile */
@@ -24,6 +26,7 @@ export class VanityPlateProfileStats {
     public spotifyStats: SpotifyStats[] = [];
     public newgroundsStats: NewgroundsStats[] = []
     public soundcloudStats: SoundCloudStats[] = [];
+    public twitterStats: TwitterStats[] = [];
 
     public static printAll(profileStats: VanityPlateProfileStats) { 
         // Print All Stats
@@ -53,5 +56,7 @@ export async function getProfileStats(context: BrowserContext, profileDef: Vanit
     profileStats.newgroundsStats = await getNewgroundsStatsArr(context, profileDef.newgroundsUsernames);
     // Get stats for all of the profile's SoundCloud usernames
     profileStats.soundcloudStats = await getSoundcloudStatsArr(context, profileDef.soundcloudUsernames);
+    // Get stats for all of the profile's twitter handles
+    profileStats.twitterStats = await getTwitterStatsArr(context, profileDef.twitterHandles);
     return  profileStats;
 }
