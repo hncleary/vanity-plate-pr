@@ -10,7 +10,7 @@ export const profileDefsPath: string = 'profile-defs'
 /** Given a profile definition and its respective stats object, write profile stats to file */
 export async function writeProfileStatsToJson(profile: VanityPlateProfile, stats: VanityPlateProfileStats): Promise<void> { 
     if(!!profile.id) { 
-        fs.writeFile(`${profileDefsPath}/${profile.id}-stats.json`, JSON.stringify(stats), (err) => {
+        fs.writeFile(`${profileDefsPath}/${profile.id}-stats.json`, JSON.stringify(stats, undefined, 4), (err) => {
             if (err) throw err;
         })
     }
