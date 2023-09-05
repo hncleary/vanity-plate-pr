@@ -17,7 +17,7 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [x] SoundCloud 
     - [x] Spotify
     - [x] Newgrounds
-    - [ ] Twitch
+    - [x] Twitch
     - [ ] Sketchfab (?)
     - [ ] Reddit (?)
     - [ ] Facebook (?)

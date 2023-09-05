@@ -34,7 +34,6 @@ export async function getTwitterStatsArr(context: BrowserContext, handles: strin
 
 export async function getTwitterStats(context: BrowserContext, handle: string): Promise<TwitterStats> { 
     const content = await getPageContent(context, handle);
-    await writeHtmlToFile('twitter', content);
     const stats: TwitterStats = new TwitterStats;
     stats.timeRetrieved = new Date().getTime();
     stats.link = `https://twitter.com/${handle}`;
