@@ -1,6 +1,7 @@
 import { BrowserContext, Page } from "playwright";
 import { writeHtmlToFile } from "../helper_functions/def_files";
 import { convertAbbreviateNumberStr } from "../helper_functions/abbrev_num_convert";
+import { getBase64ImageFromUrl } from "../helper_functions/base64_url_img_fetch";
 
 export class TwitterStats { 
     timeRetrieved: number = 0;
@@ -34,19 +35,16 @@ export async function getTwitterStatsArr(context: BrowserContext, handles: strin
 export async function getTwitterStats(context: BrowserContext, handle: string): Promise<TwitterStats> { 
     const content = await getPageContent(context, handle);
     await writeHtmlToFile('twitter', content);
-    const followerCount: number = getFollowersFromContent(content);
-    const followingCount: number = getFollowingFromContent(content);
-    const tweetCount:  number = getPostsFromContent(content);
     const stats: TwitterStats = new TwitterStats;
     stats.timeRetrieved = new Date().getTime();
     stats.link = `https://twitter.com/${handle}`;
-    // TODO - display name
+    stats.displayName = getDisplayNameFromContent(content);
     stats.handle = handle;
-    stats.totalTweets = tweetCount;
-    stats.followerCount = followerCount;
-    stats.followingCount = followingCount;
-    // TODO - icon url
-    // TODO - icon base64
+    stats.totalTweets = getPostsFromContent(content);
+    stats.followerCount = getFollowersFromContent(content);
+    stats.followingCount = getFollowingFromContent(content);
+    stats.iconUrl = getImgUrlFromContent(content);
+    stats.iconBase64 = await getBase64ImageFromUrl(stats.iconUrl);
     return stats;
 }
 
@@ -97,4 +95,26 @@ function getPostsFromContent(content: string): number {
         }
     }
     return 0;
+}
+
+function getDisplayNameFromContent(content: string): string { 
+    const regex = /"givenName": ".*",/gm
+    const matches = content.match(regex);
+    if(!!matches) { 
+        for(const match of matches) { 
+            const name = match.split('"givenName": "').join('').split('",').join('');
+            return name;
+        }
+    }
+    return '';
+}
+
+function getImgUrlFromContent(content: string): string { 
+    const regex = /https:\/\/[^<]*\/profile_images\/[^<]*200x200.jpg/gm;
+    const matches = content.match(regex);
+    if(!!matches) { 
+        return matches[0];
+    }
+    return '';
+    // TODO - add regex check for users that may have legacy .gif profile icons if this return is not truthy
 }

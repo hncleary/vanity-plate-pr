@@ -13,7 +13,7 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [x] YouTube
     - [ ] Tik Tok
     - [x] Instagram
-    - [ ] Twitter
+    - [x] Twitter
     - [x] SoundCloud 
     - [x] Spotify
     - [x] Newgrounds
