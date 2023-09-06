@@ -1,5 +1,4 @@
 import { BrowserContext, Page } from "playwright";
-import { writeHtmlToFile } from "../helper_functions/def_files";
 import { convertAbbreviateNumberStr } from "../helper_functions/abbrev_num_convert";
 import { getBase64ImageFromUrl } from "../helper_functions/base64_url_img_fetch";
 
@@ -30,7 +29,7 @@ export async function getTwitchStatsArr(context: BrowserContext, handles: string
 
 export async function getTwitchStats(context: BrowserContext, username: string): Promise<TwitchStats> { 
     const content = await getPageContent(context, username);
-    const stats: TwitchStats = new TwitchStats;
+    const stats: TwitchStats = new TwitchStats();
     stats.timeRetrieved = new Date().getTime();
     stats.link = `https://www.twitch.tv/${username}`;
     stats.displayName = getDisplayNameFromContent(content);

@@ -50,19 +50,33 @@ export class VanityPlateProfileStats {
 export async function getProfileStats(context: BrowserContext, profileDef: VanityPlateProfile): Promise<VanityPlateProfileStats> {
     const profileStats: VanityPlateProfileStats = new VanityPlateProfileStats();
     // Get stats for all of the profile's YouTube accounts
-    profileStats.youtubeStats = await getYoutubeStatsArr(context, profileDef.youtubeHandles);
+    if(!!profileDef?.youtubeHandles) { 
+        profileStats.youtubeStats = await getYoutubeStatsArr(context, profileDef.youtubeHandles);
+    }
     // Get stats for all of the profile's Instagram handles
-    profileStats.instaStats = await getInstagramStatsArr(context, profileDef.instagramHandles);
+    if(!!profileDef?.instagramHandles) { 
+        profileStats.instaStats = await getInstagramStatsArr(context, profileDef.instagramHandles);
+    }
     // Get stats for all of the profile's Spotify artist IDs
-    profileStats.spotifyStats = await getSpotifyStatsArr(context, profileDef.spotifyArtistIds);
+    if(!!profileDef?.spotifyArtistIds) { 
+        profileStats.spotifyStats = await getSpotifyStatsArr(context, profileDef.spotifyArtistIds);
+    }
     // Get stats for all of the profile's Newgrounds usernames
-    profileStats.newgroundsStats = await getNewgroundsStatsArr(context, profileDef.newgroundsUsernames);
+    if(!!profileDef?.newgroundsUsernames) { 
+        profileStats.newgroundsStats = await getNewgroundsStatsArr(context, profileDef.newgroundsUsernames);
+    }
     // Get stats for all of the profile's SoundCloud usernames
-    profileStats.soundcloudStats = await getSoundcloudStatsArr(context, profileDef.soundcloudUsernames);
+    if(!!profileDef?.soundcloudUsernames) { 
+        profileStats.soundcloudStats = await getSoundcloudStatsArr(context, profileDef.soundcloudUsernames);
+    }
     // Get stats for all of the profile's twitter handles
-    profileStats.twitterStats = await getTwitterStatsArr(context, profileDef.twitterHandles);
+    if(!!profileDef?.twitterHandles) { 
+        profileStats.twitterStats = await getTwitterStatsArr(context, profileDef.twitterHandles);
+    }
     // Get stats for all of the profile's twitch usernames
-    profileStats.twitchStats = await getTwitchStatsArr(context, profileDef.twitchUsernames);
+    if(!!profileDef?.twitchUsernames) { 
+        profileStats.twitchStats = await getTwitchStatsArr(context, profileDef.twitchUsernames);
+    }
 
     return  profileStats;
 }

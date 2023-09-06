@@ -68,7 +68,8 @@ async function getInstagramPageContent(context: BrowserContext, urlExtension: st
     const fullUrl = baseUrl + urlExtension;
     await page.goto(fullUrl); 
     // Find selector to await if issues arise with this part of the code (?)
-    await page.waitForSelector('main')
+    // await page.waitForSelector('main')
+    await page.waitForTimeout(5000);
     const content = await page.content();
     await page.close();
     return content;

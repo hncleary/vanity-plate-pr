@@ -14,9 +14,9 @@ const { chromium } = require('playwright');
     const context: BrowserContext = await browser.newContext({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' + ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36' }); 
 
     // Get all stats for test profile definition, write to file
-    const testProfile: VanityPlateProfile = await getProfileJsonDef('test');
+    const testProfile: VanityPlateProfile = await getProfileJsonDef('test', './profile-defs/');
     const profileStats: VanityPlateProfileStats = await getProfileStats(context, testProfile);
-    await writeProfileStatsToJson(testProfile, profileStats);
+    await writeProfileStatsToJson(testProfile, profileStats, './profile-defs/');
     // Print All Stats
     VanityPlateProfileStats.printAll(profileStats);
     // Close the headless browser

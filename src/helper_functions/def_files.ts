@@ -14,24 +14,24 @@ export async function writeHtmlToFile(filename: string, content: string): Promis
 }
 
 /** Given a profile definition and its respective stats object, write profile stats to file */
-export async function writeProfileStatsToJson(profile: VanityPlateProfile, stats: VanityPlateProfileStats): Promise<void> { 
+export async function writeProfileStatsToJson(profile: VanityPlateProfile, stats: VanityPlateProfileStats, outputDir: string): Promise<void> { 
     if(!!profile.id) { 
-        fs.writeFile(`${profileDefsPath}/${profile.id}-stats.json`, JSON.stringify(stats, undefined, 4), (err) => {
+        fs.writeFile(`${outputDir}/${profile.id}-stats.json`, JSON.stringify(stats, undefined, 4), (err) => {
             if (err) throw err;
         })
     }
 }
 
 /** Given a profiles identifying string, return their defined object */
-export async function getProfileJsonDef(username: string): Promise<VanityPlateProfile> { 
-    const json = await getFileContents(`${profileDefsPath}/${username}.json`);
+export async function getProfileJsonDef(username: string, inputDir: string): Promise<VanityPlateProfile> { 
+    const json = await getFileContents(`${inputDir}/${username}.json`);
     const profile: VanityPlateProfile = JSON.parse(json);
     return profile;
 }
 
 // Get a list of json files within the profile/defs directory
-export async function getProfileDefJsonsList(): Promise<string[]> {
-    const dir = await fs.promises.opendir(profileDefsPath)
+export async function getProfileDefJsonsList(inputDir: string): Promise<string[]> {
+    const dir = await fs.promises.opendir(inputDir)
     const fileNames: string[] = [];
     for await (const dirent of dir) {
         fileNames.push(dirent.name);
