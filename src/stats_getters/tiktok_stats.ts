@@ -2,7 +2,6 @@ import { BrowserContext, Page } from "playwright";
 import { convertAbbreviateNumberStr } from "../helper_functions/abbrev_num_convert";
 import { getBase64ImageFromUrl } from "../helper_functions/base64_url_img_fetch";
 
-
 export class TiktokStats {
     timeRetrieved: number = 0;
     link: string = "";
