@@ -35,6 +35,8 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [ ] Contact Information
 
     Additional Tasks:    
+    - [ ] Add system for merging stats objects (invalid / empty parameter values should not overwrite what was previously valid)
+    - [ ] Add directory creation system
     - [ ] Create additional repo for angular site
     - [ ] Create additional repo or database (Azure + Function App?) for json data storage
     - [ ] Create folder hierarchy system for multiple vanity social pages in database
