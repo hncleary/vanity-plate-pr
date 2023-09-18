@@ -1,7 +1,8 @@
 {
-    "cSpell.words": [
-        "Billi",
-        "insta",
-        "Newgrounds"
-    ]
+    "cSpell.words": ["Billi", "insta", "Newgrounds"],
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }

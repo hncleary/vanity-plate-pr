@@ -1,7 +1,7 @@
-import { BrowserContext, Page } from "playwright";
-import { convertAbbreviateNumberStr } from "../helper_functions/abbrev_num_convert";
+import { BrowserContext, Page } from 'playwright';
+import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 
-export class NewgroundsStats { 
+export class NewgroundsStats {
     timeRetrieved: number = 0;
     link: string = '';
     displayName: string = '';
@@ -18,25 +18,27 @@ export class NewgroundsStats {
     reviewsCount: number = 0;
     postsCount: number = 0;
 
-    public print() { 
+    public print() {
         console.log('Newgrounds ' + this.displayName + ' Info:');
         console.log('Fans: ' + this.fans);
-        console.log(`News: ${this.newsCount}; Movies: ${this.moviesCount}; Art: ${this.artCount}; Audio: ${this.audioCount}; Games: ${this.gamesCount};`);
+        console.log(
+            `News: ${this.newsCount}; Movies: ${this.moviesCount}; Art: ${this.artCount}; Audio: ${this.audioCount}; Games: ${this.gamesCount};`
+        );
         console.log(`Faves: ${this.favesCount}; Reviews: ${this.reviewsCount}; Posts: ${this.postsCount}; `);
     }
 }
 
 /** Given an array of newgrounds account usernames, return an array of corresponding newgrounds stats objects */
-export async function getNewgroundsStatsArr(context: BrowserContext, usernames: string[]): Promise<NewgroundsStats[]> { 
+export async function getNewgroundsStatsArr(context: BrowserContext, usernames: string[]): Promise<NewgroundsStats[]> {
     const newgroundsStats: NewgroundsStats[] = [];
-    for(const name of usernames) { 
+    for (const name of usernames) {
         const data = await getNewgroundsStats(context, name);
         newgroundsStats.push(data);
     }
     return newgroundsStats;
 }
 
-export async function getNewgroundsStats(context: BrowserContext, username: string): Promise<NewgroundsStats> { 
+export async function getNewgroundsStats(context: BrowserContext, username: string): Promise<NewgroundsStats> {
     const content: string = await getNewgroundsPageContent(context, username);
     const counts: Map<string, number> = getPostCountsFromPageContent(content);
     const stats = new NewgroundsStats();
@@ -59,23 +61,23 @@ export async function getNewgroundsStats(context: BrowserContext, username: stri
 }
 
 /** Retrieve the HTML content on a newgrounds user page */
-async function getNewgroundsPageContent(context: BrowserContext, username: string): Promise<string> { 
-    const page: Page = await context.newPage(); 
-    const url = `https://${username}.newgrounds.com/fans`
-    await page.goto(url); 
+async function getNewgroundsPageContent(context: BrowserContext, username: string): Promise<string> {
+    const page: Page = await context.newPage();
+    const url = `https://${username}.newgrounds.com/fans`;
+    await page.goto(url);
     const content = await page.content();
     await page.close();
     return content;
 }
 
 /** Given the HTML page content of a user's page, determine their fan count */
-function getExactFansFromPageContent(content: string): number { 
+function getExactFansFromPageContent(content: string): number {
     const regex = /<div class="pod">[^>]*<div class="pod-head">[^>]*<h2>[^>]*<\/h2>/gm;
     const matches = content.match(regex);
-    if(!!matches) { 
-        for(const match of matches) { 
+    if (!!matches) {
+        for (const match of matches) {
             const count = match.split('<h2>')[1].split('</h2>')[0].trim().split(' ')[1];
-            if(!!count) { 
+            if (!!count) {
                 return Number(count.split(',').join(''));
             }
         }
@@ -83,14 +85,14 @@ function getExactFansFromPageContent(content: string): number {
     return -1;
 }
 
-function getDisplayNameFromPageContent(content: string): string { 
+function getDisplayNameFromPageContent(content: string): string {
     const regex = /<div class="pod">[^>]*<div class="pod-head">[^>]*<h2>[^>]*<\/h2>/gm;
     const matches = content.match(regex);
-    if(!!matches) { 
-        for(const match of matches) { 
+    if (!!matches) {
+        for (const match of matches) {
             const name = match.split('<h2>')[1].split('</h2>')[0].trim().split(' ')[0];
-            if(!!name) { 
-                return name.split('\'')[0];
+            if (!!name) {
+                return name.split("'")[0];
             }
         }
     }
@@ -98,15 +100,15 @@ function getDisplayNameFromPageContent(content: string): string {
 }
 
 /** Given the HTML page content of a user's page, determine their fan count */
-function getPostCountsFromPageContent(content: string): Map<string, number> { 
+function getPostCountsFromPageContent(content: string): Map<string, number> {
     const regex = /<span>.*<\/span>[^>]*<strong>[^>]*<\/strong>/gm;
     const matches = content.match(regex);
     const counts: Map<string, number> = new Map<string, number>();
-    if(!!matches) { 
-        for(const match of matches) { 
+    if (!!matches) {
+        for (const match of matches) {
             const name = match.split('<span>')[1].split('</span>')[0];
             const count = match.split('<strong>')[1].split('</strong>')[0];
-            counts.set(name, Number(convertAbbreviateNumberStr(count)))
+            counts.set(name, Number(convertAbbreviateNumberStr(count)));
         }
     }
     return counts;

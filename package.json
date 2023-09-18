@@ -1,20 +1,20 @@
 {
-  "scripts": {
-    "main": "npx ts-node src/main.ts",
-    "test": "npx ts-node src/tests/test.ts",
-    "db": "npm run main ./profile-defs/ ../vanity-plate-db/stats"
-  },
-  "dependencies": {
-    "fs": "^0.0.1-security",
-    "node-fetch": "^3.3.2",
-    "playwright": "^1.36.2"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.36.2",
-    "@types/node": "^20.4.5",
-    "@typescript-eslint/eslint-plugin": "^6.2.1",
-    "@typescript-eslint/parser": "^6.2.1",
-    "eslint": "^8.46.0",
-    "playwright": "^1.36.2"
-  }
+    "scripts": {
+        "main": "npx ts-node src/main.ts",
+        "test": "npx ts-node src/tests/test.ts",
+        "db": "npm run main ./profile-defs/ ../vanity-plate-db/stats"
+    },
+    "dependencies": {
+        "fs": "^0.0.1-security",
+        "node-fetch": "^3.3.2",
+        "playwright": "^1.36.2"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.36.2",
+        "@types/node": "^20.4.5",
+        "@typescript-eslint/eslint-plugin": "^6.2.1",
+        "@typescript-eslint/parser": "^6.2.1",
+        "eslint": "^8.46.0",
+        "playwright": "^1.36.2"
+    }
 }
