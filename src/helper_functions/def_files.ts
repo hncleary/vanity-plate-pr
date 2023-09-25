@@ -38,7 +38,9 @@ export async function getProfileDefJsonsList(inputDir: string): Promise<string[]
     const dir = await fs.promises.opendir(inputDir);
     const fileNames: string[] = [];
     for await (const dirent of dir) {
-        fileNames.push(dirent.name);
+        if (!dirent.name.includes('-stats.json') && dirent.name.includes('.json')) {
+            fileNames.push(dirent.name);
+        }
     }
     return fileNames;
 }
