@@ -6,6 +6,8 @@ import { YtStats, getYoutubeStatsArr } from '../stats_getters/youtube_stats';
 import { SoundCloudStats, getSoundcloudStatsArr } from '../stats_getters/soundcloud_stats';
 import { TwitterStats, getTwitterStatsArr } from '../stats_getters/twitter_stats';
 import { TwitchStats, getTwitchStatsArr } from '../stats_getters/twitch_stats';
+import { TikTokStats, getTikTokStatsArr } from '../stats_getters/tiktok_stats';
+import { profile } from 'console';
 
 /** Profile definition defining lists of social identifiers */
 export class VanityPlateProfile {
@@ -19,6 +21,7 @@ export class VanityPlateProfile {
     public soundcloudUsernames: string[] = [];
     public twitterHandles: string[] = [];
     public twitchUsernames: string[] = [];
+    public tiktokUsernames: string[] = [];
 }
 
 /** Object all stat object for a defined profile */
@@ -30,6 +33,7 @@ export class VanityPlateProfileStats {
     public soundcloudStats: SoundCloudStats[] = [];
     public twitterStats: TwitterStats[] = [];
     public twitchStats: TwitchStats[] = [];
+    public tiktokStats: TikTokStats[] = [];
 
     public static printAll(profileStats: VanityPlateProfileStats) {
         // Print All Stats
@@ -79,6 +83,10 @@ export async function getProfileStats(
     // Get stats for all of the profile's twitch usernames
     if (!!profileDef?.twitchUsernames) {
         profileStats.twitchStats = await getTwitchStatsArr(context, profileDef.twitchUsernames);
+    }
+    // Get stats for all of the profile's tik tok usernames
+    if (!!profileDef?.tiktokUsernames) {
+        profileStats.tiktokStats = await getTikTokStatsArr(context, profileDef.tiktokUsernames);
     }
 
     return profileStats;

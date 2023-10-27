@@ -15,7 +15,7 @@ Typescript + Playwright system for gathering basic following and viewership stat
 
     Get Basic Stats from:
     - [x] YouTube
-    - [ ] Tik Tok
+    - [x] Tik Tok
     - [x] Instagram
     - [x] Twitter
     - [x] SoundCloud
