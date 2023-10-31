@@ -1,7 +1,6 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
-import { writeHtmlToFile } from '../helper_functions/def_files';
 
 export class TikTokStats {
     timeRetrieved: number = 0;
@@ -34,9 +33,6 @@ export async function getTikTokStatsArr(context: BrowserContext, usernames: stri
 
 export async function getTikTokStats(context: BrowserContext, username: string): Promise<TikTokStats> {
     const content = await getPageContent(context, username);
-
-    await writeHtmlToFile('tiktok', content);
-
     const stats: TikTokStats = new TikTokStats();
     // TODO - pull stats data from page content
     stats.timeRetrieved = new Date().getTime();
