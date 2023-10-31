@@ -42,7 +42,8 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [ ] Add system for merging stats objects (invalid / empty parameter values should not overwrite what was previously valid)
     - [ ] Add system for optionally retrieving profile icon image data
     - [ ] Add directory creation system
-    - [ ] Create additional repo for angular site
-    - [ ] Create additional repo or database (Azure + Function App?) for json data storage
+    - [x] Create additional repo for angular site
+    - [x] Create additional repo  for json data storage
+        - [ ] Create Azure service for json data storage
     - [ ] Create folder hierarchy system for multiple vanity social pages in database
     - [ ] Create custom license plate generator for per-page flair
