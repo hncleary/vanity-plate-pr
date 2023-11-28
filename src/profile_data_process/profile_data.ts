@@ -7,7 +7,6 @@ import { SoundCloudStats, getSoundcloudStatsArr } from '../stats_getters/soundcl
 import { TwitterStats, getTwitterStatsArr } from '../stats_getters/twitter_stats';
 import { TwitchStats, getTwitchStatsArr } from '../stats_getters/twitch_stats';
 import { TikTokStats, getTikTokStatsArr } from '../stats_getters/tiktok_stats';
-import { profile } from 'console';
 
 /** Profile definition defining lists of social identifiers */
 export class VanityPlateProfile {
@@ -50,6 +49,13 @@ export class VanityPlateProfileStats {
     }
 }
 
+export class VanityPlateSum {
+    /** The defined accounts Vanity-Plate-Social id / username */
+    public username: string = '';
+    /** Total number of followers the defined account has across all platforms */
+    public totalFollowers: number = 0;
+}
+
 /** Get all corresponding stats objects for a profile */
 export async function getProfileStats(
     context: BrowserContext,
@@ -90,4 +96,42 @@ export async function getProfileStats(
     }
 
     return profileStats;
+}
+
+export function getProfileStatsSummation(username: string, stats: VanityPlateProfileStats): VanityPlateSum {
+    const sum = new VanityPlateSum();
+    sum.username = username;
+    /** Loop over each available youtube account */
+    for (const yt of stats.youtubeStats) {
+        sum.totalFollowers += yt.subscribers;
+    }
+    /** Loop over each available instagram account */
+    for (const insta of stats.instaStats) {
+        sum.totalFollowers += insta.followerCount;
+    }
+    /** Loop over each available spotify account */
+    for (const spoofy of stats.spotifyStats) {
+        sum.totalFollowers += spoofy.monthlyListeners;
+    }
+    /** Loop over each available newgrounds account */
+    for (const ng of stats.newgroundsStats) {
+        sum.totalFollowers += ng.fans;
+    }
+    /** Loop over each available soundcloud account */
+    for (const sc of stats.soundcloudStats) {
+        sum.totalFollowers += sc.followers;
+    }
+    /** Loop over each available twitter account */
+    for (const twitter of stats.twitterStats) {
+        sum.totalFollowers += twitter.followerCount;
+    }
+    /** Loop over each available twitch account */
+    for (const twitch of stats.twitchStats) {
+        sum.totalFollowers += twitch.followers;
+    }
+    /** Loop over each available tiktok account */
+    for (const tt of stats.tiktokStats) {
+        sum.totalFollowers += tt.followerCount;
+    }
+    return sum;
 }
