@@ -1,4 +1,9 @@
-import { VanityPlateProfile, VanityPlateProfileStats, VanityPlateSum } from '../profile_data_process/profile_data';
+import {
+    VanityPlateProfile,
+    VanityPlateProfileStats,
+    VanityPlateSum,
+    VanityPlateSumCollection,
+} from '../profile_data_process/profile_data';
 
 const fs = require('fs'); // Built-in filesystem package for Node.js
 const util = require('util');
@@ -26,8 +31,11 @@ export async function writeProfileStatsToJson(
     }
 }
 
-export async function writeSummaryListToJson(summaryList: VanityPlateSum[], outputDir: string): Promise<void> {
-     fs.writeFile(`${outputDir}/db_summary.json`, JSON.stringify(summaryList, undefined, 4), (err) => {
+export async function writeSummaryCollectionToJson(
+    summaryCollection: VanityPlateSumCollection,
+    outputDir: string
+): Promise<void> {
+    fs.writeFile(`${outputDir}/db_summary.json`, JSON.stringify(summaryCollection, undefined, 4), (err) => {
         if (err) throw err;
     });
 }

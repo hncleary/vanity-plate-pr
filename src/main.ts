@@ -3,6 +3,7 @@ import {
     VanityPlateProfile,
     VanityPlateProfileStats,
     VanityPlateSum,
+    VanityPlateSumCollection,
     getProfileStats,
     getProfileStatsSummation,
 } from './profile_data_process/profile_data';
@@ -10,7 +11,7 @@ import {
     getProfileDefJsonsList,
     getFileContents,
     writeProfileStatsToJson,
-    writeSummaryListToJson,
+    writeSummaryCollectionToJson,
 } from './helper_functions/def_files';
 const { chromium } = require('playwright');
 
@@ -44,7 +45,8 @@ async function main(inputDir: string = './profile-defs/', outputDir: string = '.
             summaryList.push(getProfileStatsSummation(profile.id, profileStats));
         }
     }
-    writeSummaryListToJson(summaryList, outputDir);
+    const sumCollection = new VanityPlateSumCollection(summaryList);
+    writeSummaryCollectionToJson(sumCollection, outputDir);
     // Close the headless browser
     await browser.close();
 }

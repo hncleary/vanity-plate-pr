@@ -56,6 +56,17 @@ export class VanityPlateSum {
     public totalFollowers: number = 0;
 }
 
+export class VanityPlateSumCollection {
+    /** List of vanity plate profiles summation indexes */
+    public sums: VanityPlateSum[] = [];
+    /** Timestamp for when these items were recorded */
+    public timeRetrieved: number = 0;
+    constructor(sums: VanityPlateSum[]) {
+        this.sums = sums;
+        this.timeRetrieved = new Date().getTime();
+    }
+}
+
 /** Get all corresponding stats objects for a profile */
 export async function getProfileStats(
     context: BrowserContext,
