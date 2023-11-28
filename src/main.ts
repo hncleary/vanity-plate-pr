@@ -1,6 +1,17 @@
 import { BrowserContext } from 'playwright';
-import { VanityPlateProfile, VanityPlateProfileStats, getProfileStats } from './profile_data_process/profile_data';
-import { getProfileDefJsonsList, getFileContents, writeProfileStatsToJson } from './helper_functions/def_files';
+import {
+    VanityPlateProfile,
+    VanityPlateProfileStats,
+    VanityPlateSum,
+    getProfileStats,
+    getProfileStatsSummation,
+} from './profile_data_process/profile_data';
+import {
+    getProfileDefJsonsList,
+    getFileContents,
+    writeProfileStatsToJson,
+    writeSummaryListToJson,
+} from './helper_functions/def_files';
 const { chromium } = require('playwright');
 
 async function main(inputDir: string = './profile-defs/', outputDir: string = './profile-defs/') {
@@ -14,6 +25,7 @@ async function main(inputDir: string = './profile-defs/', outputDir: string = '.
     });
     /** Get the list of available profile definition JSON files*/
     const profileDefList = await getProfileDefJsonsList(inputDir);
+    const summaryList: VanityPlateSum[] = [];
     for (const profileJson of profileDefList) {
         // Parse profile object from JSON file
         const json: string = await getFileContents(`${inputDir}${profileJson}`);
@@ -29,8 +41,10 @@ async function main(inputDir: string = './profile-defs/', outputDir: string = '.
             VanityPlateProfileStats.printAll(profileStats);
             console.log('===================');
             console.log('===================');
+            summaryList.push(getProfileStatsSummation(profile.id, profileStats));
         }
     }
+    writeSummaryListToJson(summaryList, outputDir);
     // Close the headless browser
     await browser.close();
 }
