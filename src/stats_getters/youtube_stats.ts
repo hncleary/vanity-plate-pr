@@ -1,6 +1,7 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
+import { writeHtmlToFile } from '../helper_functions/def_files';
 
 export class YtStats {
     timeRetrieved: number = 0;
@@ -65,12 +66,12 @@ async function getYoutubePageContent(context: BrowserContext, urlExtension: stri
 
 /** Given the entire HTML content of a channel's about page, return their total views */
 function getViewsFromPageContent(htmlContent: string): number {
-    const regex = /<yt-formatted-string.*<\/yt-formatted-string>/gm;
+    const regex = /viewCountText[^{]*joinedDateText/gm;
     const matches = htmlContent.match(regex);
     if (!!matches) {
         for (const match of matches) {
             if (match.toLowerCase().includes('views')) {
-                const viewsTxt: string = match.split('>')[1].split('<')[0];
+                const viewsTxt: string = match.split(':"')[1].split('views"')[0];
                 const views: number = parseFloat(viewsTxt.split(' ')[0].replace(/,/g, ''));
                 return views;
             }
@@ -80,7 +81,6 @@ function getViewsFromPageContent(htmlContent: string): number {
 }
 /** Given the entire HTML content of a channel's about page, return their total subscribers */
 function getSubsFromPageContent(htmlContent: string): number {
-    const multipliers: string[] = ['', 'k', 'm', 'b']; // subscriber count are abbreviated with at 1K, 1M : use these to multiply back to original values
     const regex = /<yt-formatted-string id="subscriber-count".*<\/yt-formatted-string>/gm;
     const matches = htmlContent.match(regex);
     if (!!matches) {
@@ -124,6 +124,5 @@ function getImageUrlFromPageContent(htmlContent: string): string {
     } catch (e) {
         console.error('Unable to get image url from page', e);
     }
-
     return '';
 }
