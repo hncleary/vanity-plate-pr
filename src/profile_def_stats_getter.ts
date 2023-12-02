@@ -30,7 +30,9 @@ export async function profileStatsGetter(
     /** Get the list of available profile definition JSON files*/
     let profileDefList: string[] = await getProfileDefJsonsList(inputDir);
     /** Filter out any profile defs that don't match the specified profile (if there is one specified) */
-    profileDefList = profileDefList.filter((p) => p == `${specifiedProfile}.json`);
+    if (!!specifiedProfile) {
+        profileDefList = profileDefList.filter((p) => p == `${specifiedProfile}.json`);
+    }
     const summaryList: VanityPlateSum[] = [];
     // Get the time at which the total process started
     const totalStartTime = new Date().getTime();

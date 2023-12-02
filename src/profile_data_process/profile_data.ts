@@ -25,6 +25,9 @@ export class VanityPlateProfile {
 
 /** Object all stat object for a defined profile */
 export class VanityPlateProfileStats {
+    public id: string = '';
+    public displayName: string = '';
+    // Account Stats
     public youtubeStats: YtStats[] = [];
     public instaStats: InstagramStats[] = [];
     public spotifyStats: SpotifyStats[] = [];
@@ -73,6 +76,10 @@ export async function getProfileStats(
     profileDef: VanityPlateProfile
 ): Promise<VanityPlateProfileStats> {
     const profileStats: VanityPlateProfileStats = new VanityPlateProfileStats();
+    // Set profile id for later reference
+    profileStats.id = profileDef.id;
+    // Set profile display name for later reference
+    profileStats.displayName = profileDef.displayName;
     // Get stats for all of the profile's YouTube accounts
     if (!!profileDef?.youtubeHandles) {
         profileStats.youtubeStats = await getYoutubeStatsArr(context, profileDef.youtubeHandles);
