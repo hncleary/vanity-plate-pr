@@ -57,7 +57,7 @@ export async function profileStatsGetter(
             const timeEnd = new Date().getTime();
             console.log(`-> Retrieved Stats for ${profile.id} in ${Math.ceil((timeEnd - timeStart) / 1000)} seconds`);
             console.log('===================');
-            summaryList.push(getProfileStatsSummation(profile.id, profileStats));
+            summaryList.push(getProfileStatsSummation(profile.id, profile.displayName, profileStats));
             profileCount++;
         }
     }

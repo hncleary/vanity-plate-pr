@@ -55,6 +55,8 @@ export class VanityPlateProfileStats {
 export class VanityPlateSum {
     /** The defined accounts Vanity-Plate-Social id / username */
     public username: string = '';
+    /** The defined accounts name to be displayed */
+    public displayName: string = '';
     /** Total number of followers the defined account has across all platforms */
     public totalFollowers: number = 0;
 }
@@ -116,9 +118,14 @@ export async function getProfileStats(
     return profileStats;
 }
 
-export function getProfileStatsSummation(username: string, stats: VanityPlateProfileStats): VanityPlateSum {
+export function getProfileStatsSummation(
+    username: string,
+    displayName: string,
+    stats: VanityPlateProfileStats
+): VanityPlateSum {
     const sum = new VanityPlateSum();
     sum.username = username;
+    sum.displayName = displayName;
     /** Loop over each available youtube account */
     for (const yt of stats.youtubeStats) {
         sum.totalFollowers += yt.subscribers;
