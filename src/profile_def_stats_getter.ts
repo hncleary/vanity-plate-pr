@@ -23,7 +23,7 @@ export async function profileStatsGetter(
         console.log('Specified profile: ' + specifiedProfile);
     }
     // Launch playwright browser
-    const browser = await chromium.launch({ headless: false });
+    const browser = await chromium.launch();
     // Set user agent to prevent web scrape detection
     const context: BrowserContext = await browser.newContext({
         userAgent:

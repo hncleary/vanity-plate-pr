@@ -1,16 +1,16 @@
-import { BrowserContext, Page } from 'playwright';
-import { writeHtmlToFile } from '../helper_functions/def_files';
+import { BrowserContext, Page, chromium } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
+import { systemHasDisplay } from '../helper_functions/has_display';
 
 export class TwitterStats {
-    timeRetrieved: number = 0;
+    timeRetrieved: number = -1;
     link: string = '';
     displayName: string = '';
     handle: string = ';';
-    totalTweets: number = 0;
-    followerCount: number = 0;
-    followingCount: number = 0;
+    totalTweets: number = -1;
+    followerCount: number = -1;
+    followingCount: number = -1;
     iconUrl: string = '';
     iconBase64: string = '';
 
@@ -21,18 +21,38 @@ export class TwitterStats {
         console.log('Total Following: ' + this.followingCount);
         console.log('Total Tweets: ' + this.totalTweets);
     }
+    // ensure that none of the current values are equal to the constructor defaults
+    public isValid() {
+        return (
+            this.timeRetrieved > 0 &&
+            this.link !== '' &&
+            this.handle !== '' &&
+            this.totalTweets > 0 &&
+            this.followerCount > 0 &&
+            this.followingCount > 0
+        );
+    }
 }
-
-export const USE_NITTER = true;
 
 export async function getTwitterStatsArr(context: BrowserContext, handles: string[]): Promise<TwitterStats[]> {
     const stats: TwitterStats[] = [];
     for (const handle of handles) {
         let data: TwitterStats;
-        if (!USE_NITTER) {
-            data = await getTwitterStats(context, handle);
-        } else {
-            data = await getNitterStats(context, handle);
+        data = await getTwitterStats(context, handle);
+        // If data is not valid, retry getting stats for the user with a headful browser on nitter.net
+        if (!data.isValid()) {
+            const hasDisplay = await systemHasDisplay();
+            console.log('System Has Display: ' + hasDisplay);
+            if (hasDisplay) {
+                const headfulBrowser = await chromium.launch({ headless: false });
+                const headfulContext: BrowserContext = await headfulBrowser.newContext({
+                    userAgent:
+                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' +
+                        ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+                });
+                data = await getNitterStats(headfulContext, handle);
+                headfulBrowser.close();
+            }
         }
         stats.push(data);
     }
@@ -74,7 +94,7 @@ function getFollowersFromContent(content: string): number {
             return convertAbbreviateNumberStr(numTxt);
         }
     }
-    return 0;
+    return -1;
 }
 
 function getFollowingFromContent(content: string): number {
@@ -87,7 +107,7 @@ function getFollowingFromContent(content: string): number {
             return convertAbbreviateNumberStr(numTxt);
         }
     }
-    return 0;
+    return -1;
 }
 
 function getPostsFromContent(content: string): number {
@@ -99,15 +119,15 @@ function getPostsFromContent(content: string): number {
             return convertAbbreviateNumberStr(numTxt);
         }
     }
-    return 0;
+    return -1;
 }
 
 function getDisplayNameFromContent(content: string): string {
-    const regex = /"givenName": ".*",/gm;
+    const regex = /"givenName":[^,]*"[^,]*",/gm;
     const matches = content.match(regex);
     if (!!matches) {
         for (const match of matches) {
-            const name = match.split('"givenName": "').join('').split('",').join('');
+            const name = match.split('"givenName":"').join('').split('",').join('');
             return name;
         }
     }
@@ -146,14 +166,12 @@ async function getNitterPageContent(context: BrowserContext, handle: string): Pr
     await page.goto(url);
     await page.waitForTimeout(2000);
     const content = await page.content();
-    await writeHtmlToFile('nitter', content);
     await page.close();
     return content;
 }
 function getDisplayNameFromNitterContent(content: string): string {
     const regex = /<a class="profile-card-fullname" href="[^<]*" title="[^<]*">[^<]*</gm;
     const matches = content.match(regex);
-    console.log(matches);
     if (!!matches) {
         for (const match of matches) {
             const txt = match.split('>')[1].split('<')[0];

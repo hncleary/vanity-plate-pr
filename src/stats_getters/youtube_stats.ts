@@ -1,7 +1,6 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
-import { writeHtmlToFile } from '../helper_functions/def_files';
 
 export class YtStats {
     timeRetrieved: number = 0;
