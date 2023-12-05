@@ -23,10 +23,17 @@ export class TwitterStats {
     }
 }
 
+export const USE_NITTER = true;
+
 export async function getTwitterStatsArr(context: BrowserContext, handles: string[]): Promise<TwitterStats[]> {
     const stats: TwitterStats[] = [];
     for (const handle of handles) {
-        const data = await getTwitterStats(context, handle);
+        let data: TwitterStats;
+        if (!USE_NITTER) {
+            data = await getTwitterStats(context, handle);
+        } else {
+            data = await getNitterStats(context, handle);
+        }
         stats.push(data);
     }
     return stats;
@@ -115,4 +122,91 @@ function getImgUrlFromContent(content: string): string {
     }
     return '';
     // TODO - add regex check for users that may have legacy .gif profile icons if this return is not truthy
+}
+
+export async function getNitterStats(context: BrowserContext, handle: string): Promise<TwitterStats> {
+    // https://nitter.net/cyranek
+    const content = await getNitterPageContent(context, handle);
+    const stats: TwitterStats = new TwitterStats();
+    stats.timeRetrieved = new Date().getTime();
+    stats.link = `https://twitter.com/${handle}`;
+    stats.displayName = getDisplayNameFromNitterContent(content);
+    stats.handle = handle;
+    stats.totalTweets = getPostsFromNitterContent(content);
+    stats.followerCount = getFollowersFromNitterContent(content);
+    stats.followingCount = getFollowingFromNitterContent(content);
+    stats.iconUrl = getImgUrlFromNitterContent(content);
+    stats.iconBase64 = await getBase64ImageFromUrl(stats.iconUrl);
+    return stats;
+}
+
+async function getNitterPageContent(context: BrowserContext, handle: string): Promise<string> {
+    const page: Page = await context.newPage();
+    const url = `https://nitter.net/${handle}`;
+    await page.goto(url);
+    await page.waitForTimeout(2000);
+    const content = await page.content();
+    await writeHtmlToFile('nitter', content);
+    await page.close();
+    return content;
+}
+function getDisplayNameFromNitterContent(content: string): string {
+    const regex = /<a class="profile-card-fullname" href="[^<]*" title="[^<]*">[^<]*</gm;
+    const matches = content.match(regex);
+    console.log(matches);
+    if (!!matches) {
+        for (const match of matches) {
+            const txt = match.split('>')[1].split('<')[0];
+            return txt;
+        }
+    }
+    return '';
+}
+function getPostsFromNitterContent(content: string): number {
+    const regex = /<span class="profile-stat-header">Tweets<\/span>[^<]*<span class="profile-stat-num">[^<]*/gm;
+    const matches = content.match(regex);
+    if (!!matches) {
+        for (const match of matches) {
+            const txtarr = match.split('>');
+            let num = txtarr[txtarr.length - 1];
+            num = num.split(',').join('');
+            return Number(num);
+        }
+    }
+    return -1;
+}
+function getFollowersFromNitterContent(content: string): number {
+    const regex = /<span class="profile-stat-header">Followers<\/span>[^<]*<span class="profile-stat-num">[^<]*/gm;
+    const matches = content.match(regex);
+    if (!!matches) {
+        for (const match of matches) {
+            const txtarr = match.split('>');
+            let num = txtarr[txtarr.length - 1];
+            num = num.split(',').join('');
+            return Number(num);
+        }
+    }
+    return -1;
+}
+function getFollowingFromNitterContent(content: string): number {
+    const regex = /<span class="profile-stat-header">Following<\/span>[^<]*<span class="profile-stat-num">[^<]*/gm;
+    const matches = content.match(regex);
+    if (!!matches) {
+        for (const match of matches) {
+            const txtarr = match.split('>');
+            return Number(txtarr[txtarr.length - 1]);
+        }
+    }
+    return -1;
+}
+function getImgUrlFromNitterContent(content: string): string {
+    const regex = /<a class="profile-card-avatar"[^<]*<[^<]*<\/a>/gm;
+    const matches = content.match(regex);
+    if (!!matches) {
+        for (const match of matches) {
+            const imgSrc = match.split('src="')[1].split('"')[0];
+            return `https://nitter.net${imgSrc}`;
+        }
+    }
+    return '';
 }
