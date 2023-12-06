@@ -67,7 +67,7 @@ export class VanityPlateSumCollection {
     /** Timestamp for when these items were recorded */
     public timeRetrieved: number = 0;
     constructor(sums: VanityPlateSum[]) {
-        this.sums = sums;
+        this.sums = sums.sort((a, b) => (a.displayName.toLowerCase() < b.displayName.toLowerCase() ? -1 : 1));
         this.timeRetrieved = new Date().getTime();
     }
 }
