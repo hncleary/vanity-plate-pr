@@ -13,6 +13,7 @@ import {
     getProfileStatsSummation,
     VanityPlateSumCollection,
 } from './profile_data_process/profile_data';
+import chalk = require('chalk');
 
 export async function profileStatsGetter(
     inputDir: string = './profile-defs/',
@@ -50,16 +51,19 @@ export async function profileStatsGetter(
             // Get the time at which the process for this user started
             const timeStart = new Date().getTime();
             console.log(`[[Getting stats for ${profile.id}]]`);
-            console.log('-----------');
             const profileStats: VanityPlateProfileStats = await getProfileStats(context, profile);
+
+            // TODO - Validate retrieved stats to ensure that database doesn't regress (values should not be set to default -1 or 0 on error)
+
             // Write cumulative profile stats to .json
             await writeProfileStatsToJson(profile, profileStats, outputDir);
-            // Print all stats objects
-            VanityPlateProfileStats.printAll(profileStats);
             // Get the time at which the process for this user ended
             const timeEnd = new Date().getTime();
-            console.log(`-> Retrieved Stats for ${profile.id} in ${Math.ceil((timeEnd - timeStart) / 1000)} seconds`);
-            console.log('===================');
+            console.log(
+                chalk.green(
+                    `-> Retrieved Stats for ${profile.id} in ${Math.ceil((timeEnd - timeStart) / 1000)} seconds`
+                )
+            );
             summaryList.push(getProfileStatsSummation(profile.id, profile.displayName, profileStats));
             profileCount++;
         }

@@ -22,21 +22,23 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [x] Spotify
     - [x] Newgrounds
     - [x] Twitch
+    - [ ] Threads (Instagram)
+    - [ ] Facebook
     - [ ] Sketchfab (?)
     - [ ] Reddit (?)
-    - [ ] Facebook (?)
     - [ ] Cameo (?)
     - [ ] Billi Billi (?)
-    - [ ] Threads (?)
     - [ ] DeviantArt (?)
     - [ ] Tumblr (?)
     - [ ] Pinterest (?)
     - [ ] Shopify (?)
     - [ ] Snapchat (?)
 
-
     Add Object Input Definitions for:
     - [ ] Contact Information
+    - [ ] Account Verification Status
+    - [ ] Bio
+    - [ ] Additional Links
 
     Additional Tasks:
     - [ ] Add system for merging stats objects (invalid / empty parameter values should not overwrite what was previously valid)
@@ -45,5 +47,5 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [x] Create additional repo for angular site
     - [x] Create additional repo  for json data storage
         - [ ] Create Azure service for json data storage
-    - [ ] Create folder hierarchy system for multiple vanity social pages in database
-    - [ ] Create custom license plate generator for per-page flair
+    - [x] Create folder hierarchy system for multiple vanity social pages in database
+    - [x] Create custom license plate generator for per-page flair
