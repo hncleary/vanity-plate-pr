@@ -5,6 +5,7 @@
         "db": "npm run main ../vanity-plate-db/profile-defs/ ../vanity-plate-db/stats"
     },
     "dependencies": {
+        "chalk": "^4.1.2",
         "fs": "^0.0.1-security",
         "node-fetch": "^3.3.2",
         "playwright": "^1.36.2",
