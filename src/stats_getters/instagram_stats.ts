@@ -1,15 +1,17 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
+import chalk = require('chalk');
+import { writeHtmlToFile } from '../helper_functions/def_files';
 
 export class InstagramStats {
-    timeRetrieved: number = 0;
+    timeRetrieved: number = -1;
     link: string = '';
     displayName: string = '';
     handle: string = ';';
-    totalPosts: number = 0;
-    followerCount: number = 0;
-    followingCount: number = 0;
+    totalPosts: number = -1;
+    followerCount: number = -1;
+    followingCount: number = -1;
     iconBase64: string = '';
 
     public print() {
@@ -19,6 +21,27 @@ export class InstagramStats {
         console.log('Total Following: ' + this.followingCount);
         console.log('Total Posts: ' + this.totalPosts);
     }
+
+    public isValid(): boolean {
+        let isValid = true;
+        if (!this.iconBase64) {
+            console.log(chalk.yellow(`No instagram icon set in profile (@${this.handle})`));
+            isValid = false;
+        }
+        if (this.totalPosts < 0) {
+            console.log(chalk.yellow(`No value set for instagram total posts (@${this.handle})`));
+            isValid = false;
+        }
+        if (this.followerCount < 0) {
+            console.log(chalk.yellow(`No value set for follower count (@${this.handle})`));
+            isValid = false;
+        }
+        if (this.followingCount < 0) {
+            console.log(chalk.yellow(`No value set for following count (@${this.handle})`));
+            isValid = false;
+        }
+        return isValid;
+    }
 }
 
 /** Get an array of objects containing instagram info and statistics given a browser context and account @'s */
@@ -27,6 +50,7 @@ export async function getInstagramStatsArr(context: BrowserContext, handles: str
     for (const handle of handles) {
         const data = await getInstagramStats(context, handle);
         instagramStats.push(data);
+        data.isValid();
     }
     return instagramStats;
 }
@@ -46,7 +70,7 @@ export async function getInstagramStats(context: BrowserContext, handle: string)
     try {
         iconBase64 = await getBase64ImageFromUrl(iconUrl);
     } catch {
-        console.error('Unable to fetch image from ' + iconUrl);
+        console.error(chalk.yellow('Unable to fetch image from ' + iconUrl));
     }
 
     const stats = new InstagramStats();
@@ -115,7 +139,10 @@ function getPostCountFromContent(content: string): number {
 /** Given the entire HTML content of a user's instagram page, return their display name */
 function getDisplayNameFromContent(content: string, handle: string): string {
     const descLine = getDescriptionFromContent(content);
-    const handleSplitter = `(@${handle})`;
+    let handleSplitter = `(@${handle})`;
+    if (!descLine.includes(handleSplitter)) {
+        return handle;
+    }
     return descLine.split('from ')[1].split(handleSplitter)[0].split(' ').join('');
 }
 /** Given the entire HTML content of a user's instagram page, return the url for their profile image */
@@ -134,18 +161,3 @@ function getImageUrlFromPageContent(htmlContent: string): string {
     }
     return '';
 }
-
-/** Given an entire page of HTML content - not currently in use for instagram stats */
-// function getBase64ImageFromContent(content: string): string[] {
-//     const regex = /src="(data:image\/[^;]+;base64[^"]+)"/gm;
-//     const matches = content.match(regex);
-//     console.log(matches);
-//     const base64Imgs: string[] = [];
-//     if(!!matches) {
-//         for(const match of matches) {
-//             const base64 = match.split('src="')[1].split('"')[0].split(' ').join('');;
-//             base64Imgs.push(base64);
-//         }
-//     }
-//     return base64Imgs;
-// }
