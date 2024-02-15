@@ -2,47 +2,7 @@ import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
 import chalk = require('chalk');
-import { writeHtmlToFile } from '../helper_functions/def_files';
-
-export class InstagramStats {
-    timeRetrieved: number = -1;
-    link: string = '';
-    displayName: string = '';
-    handle: string = ';';
-    totalPosts: number = -1;
-    followerCount: number = -1;
-    followingCount: number = -1;
-    iconBase64: string = '';
-
-    public print() {
-        console.log('Instagram ' + this.displayName + ' Info:');
-        console.log('Handle (@): ' + this.handle);
-        console.log('Total Followers: ' + this.followerCount);
-        console.log('Total Following: ' + this.followingCount);
-        console.log('Total Posts: ' + this.totalPosts);
-    }
-
-    public isValid(): boolean {
-        let isValid = true;
-        if (!this.iconBase64) {
-            console.log(chalk.yellow(`No instagram icon set in profile (@${this.handle})`));
-            isValid = false;
-        }
-        if (this.totalPosts < 0) {
-            console.log(chalk.yellow(`No value set for instagram total posts (@${this.handle})`));
-            isValid = false;
-        }
-        if (this.followerCount < 0) {
-            console.log(chalk.yellow(`No value set for follower count (@${this.handle})`));
-            isValid = false;
-        }
-        if (this.followingCount < 0) {
-            console.log(chalk.yellow(`No value set for following count (@${this.handle})`));
-            isValid = false;
-        }
-        return isValid;
-    }
-}
+import { InstagramStats } from './stats_defs';
 
 /** Get an array of objects containing instagram info and statistics given a browser context and account @'s */
 export async function getInstagramStatsArr(context: BrowserContext, handles: string[]): Promise<InstagramStats[]> {
@@ -50,7 +10,7 @@ export async function getInstagramStatsArr(context: BrowserContext, handles: str
     for (const handle of handles) {
         const data = await getInstagramStats(context, handle);
         instagramStats.push(data);
-        data.isValid();
+        // data.isValid();
     }
     return instagramStats;
 }
@@ -60,12 +20,7 @@ export async function getInstagramStats(context: BrowserContext, handle: string)
     const urlExt = `/${handle}`;
     const content: string = await getInstagramPageContent(context, urlExt);
 
-    const followers: number = getFollowersFromContent(content);
-    const following: number = getFollowingFromContent(content);
-    const postCount: number = getPostCountFromContent(content);
-    const displayName: string = getDisplayNameFromContent(content, handle);
     const iconUrl: string = getImageUrlFromPageContent(content);
-
     let iconBase64: string = '';
     try {
         iconBase64 = await getBase64ImageFromUrl(iconUrl);
@@ -76,11 +31,11 @@ export async function getInstagramStats(context: BrowserContext, handle: string)
     const stats = new InstagramStats();
     stats.timeRetrieved = new Date().getTime();
     stats.link = `https://www.instagram.com/${handle}`;
-    stats.displayName = displayName;
-    stats.handle = handle;
-    stats.totalPosts = postCount;
-    stats.followerCount = followers;
-    stats.followingCount = following;
+    stats.displayName = getDisplayNameFromContent(content, handle);
+    stats.username = handle;
+    stats.totalPosts = getPostCountFromContent(content);
+    stats.followerCount = getFollowersFromContent(content);
+    stats.followingCount = getFollowingFromContent(content);
     stats.iconBase64 = iconBase64;
     return stats;
 }

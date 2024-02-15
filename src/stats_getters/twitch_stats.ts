@@ -1,22 +1,7 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
-
-export class TwitchStats {
-    timeRetrieved: number = 0;
-    link: string = '';
-    displayName: string = '';
-    username: string = '';
-    followers: number = 0;
-    iconUrl: string = '';
-    iconBas64: string = '';
-
-    public print() {
-        console.log('Twitch [' + this.displayName + '] Info:');
-        console.log('Username: ' + this.username);
-        console.log('Total Followers: ' + this.followers);
-    }
-}
+import { TwitchStats } from './stats_defs';
 
 export async function getTwitchStatsArr(context: BrowserContext, handles: string[]): Promise<TwitchStats[]> {
     const stats: TwitchStats[] = [];
@@ -34,9 +19,9 @@ export async function getTwitchStats(context: BrowserContext, username: string):
     stats.link = `https://www.twitch.tv/${username}`;
     stats.displayName = getDisplayNameFromContent(content);
     stats.username = username;
-    stats.followers = getFollowersFromContent(content);
+    stats.followerCount = getFollowersFromContent(content);
     stats.iconUrl = getIconUrlFromContent(content);
-    stats.iconBas64 = await getBase64ImageFromUrl(stats.iconUrl);
+    stats.iconBase64 = await getBase64ImageFromUrl(stats.iconUrl);
     return stats;
 }
 

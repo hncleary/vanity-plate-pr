@@ -1,12 +1,21 @@
 import { BrowserContext } from 'playwright';
-import { InstagramStats, getInstagramStatsArr } from '../stats_getters/instagram_stats';
+import { getInstagramStatsArr } from '../stats_getters/instagram_stats';
 import { NewgroundsStats, getNewgroundsStatsArr } from '../stats_getters/newgrounds_stats';
-import { SpotifyStats, getSpotifyStatsArr } from '../stats_getters/spotify_stats';
-import { YtStats, getYoutubeStatsArr } from '../stats_getters/youtube_stats';
-import { SoundCloudStats, getSoundcloudStatsArr } from '../stats_getters/soundcloud_stats';
-import { TwitterStats, getTwitterStatsArr } from '../stats_getters/twitter_stats';
-import { TwitchStats, getTwitchStatsArr } from '../stats_getters/twitch_stats';
-import { TikTokStats, getTikTokStatsArr } from '../stats_getters/tiktok_stats';
+import { getSpotifyStatsArr } from '../stats_getters/spotify_stats';
+import { getYoutubeStatsArr } from '../stats_getters/youtube_stats';
+import { getSoundcloudStatsArr } from '../stats_getters/soundcloud_stats';
+import { getTwitterStatsArr } from '../stats_getters/twitter_stats';
+import { getTwitchStatsArr } from '../stats_getters/twitch_stats';
+import { getTikTokStatsArr } from '../stats_getters/tiktok_stats';
+import {
+    InstagramStats,
+    SoundCloudStats,
+    SpotifyStats,
+    TiktokStats,
+    TwitchStats,
+    TwitterStats,
+    YoutubeStats,
+} from '../stats_getters/stats_defs';
 
 /** Profile definition defining lists of social identifiers */
 export class VanityPlateProfile {
@@ -28,14 +37,14 @@ export class VanityPlateProfileStats {
     public id: string = '';
     public displayName: string = '';
     // Account Stats
-    public youtubeStats: YtStats[] = [];
+    public youtubeStats: YoutubeStats[] = [];
     public instaStats: InstagramStats[] = [];
     public spotifyStats: SpotifyStats[] = [];
     public newgroundsStats: NewgroundsStats[] = [];
     public soundcloudStats: SoundCloudStats[] = [];
     public twitterStats: TwitterStats[] = [];
     public twitchStats: TwitchStats[] = [];
-    public tiktokStats: TikTokStats[] = [];
+    public tiktokStats: TiktokStats[] = [];
 
     public static printAll(profileStats: VanityPlateProfileStats) {
         // Print All Stats
@@ -126,37 +135,47 @@ export function getProfileStatsSummation(
     const sum = new VanityPlateSum();
     sum.username = username;
     sum.displayName = displayName;
-    /** Loop over each available youtube account */
-    for (const yt of stats.youtubeStats) {
-        sum.totalFollowers += yt.subscribers;
-    }
-    /** Loop over each available instagram account */
-    for (const insta of stats.instaStats) {
-        sum.totalFollowers += insta.followerCount;
-    }
-    /** Loop over each available spotify account */
-    for (const spoofy of stats.spotifyStats) {
-        sum.totalFollowers += spoofy.monthlyListeners;
-    }
-    /** Loop over each available newgrounds account */
-    for (const ng of stats.newgroundsStats) {
-        sum.totalFollowers += ng.fans;
-    }
-    /** Loop over each available soundcloud account */
-    for (const sc of stats.soundcloudStats) {
-        sum.totalFollowers += sc.followers;
-    }
-    /** Loop over each available twitter account */
-    for (const twitter of stats.twitterStats) {
-        sum.totalFollowers += twitter.followerCount;
-    }
-    /** Loop over each available twitch account */
-    for (const twitch of stats.twitchStats) {
-        sum.totalFollowers += twitch.followers;
-    }
-    /** Loop over each available tiktok account */
-    for (const tt of stats.tiktokStats) {
-        sum.totalFollowers += tt.followerCount;
-    }
+
+    /** Loop over each platforms within the stats object */
+    Object.keys(stats).forEach((platform) => {
+        const accounts = stats[platform];
+        /** Loop over each account listed within the platform */
+        for (const account of accounts) {
+            sum.totalFollowers += account.followerCount;
+        }
+    });
+
+    // /** Loop over each available youtube account */
+    // for (const yt of stats.youtubeStats) {
+    //     sum.totalFollowers += yt.followerCount;
+    // }
+    // /** Loop over each available instagram account */
+    // for (const insta of stats.instaStats) {
+    //     sum.totalFollowers += insta.followerCount;
+    // }
+    // /** Loop over each available spotify account */
+    // for (const spoofy of stats.spotifyStats) {
+    //     sum.totalFollowers += spoofy.monthlyListeners;
+    // }
+    // /** Loop over each available newgrounds account */
+    // for (const ng of stats.newgroundsStats) {
+    //     sum.totalFollowers += ng.fans;
+    // }
+    // /** Loop over each available soundcloud account */
+    // for (const sc of stats.soundcloudStats) {
+    //     sum.totalFollowers += sc.followers;
+    // }
+    // /** Loop over each available twitter account */
+    // for (const twitter of stats.twitterStats) {
+    //     sum.totalFollowers += twitter.followerCount;
+    // }
+    // /** Loop over each available twitch account */
+    // for (const twitch of stats.twitchStats) {
+    //     sum.totalFollowers += twitch.followers;
+    // }
+    // /** Loop over each available tiktok account */
+    // for (const tt of stats.tiktokStats) {
+    //     sum.totalFollowers += tt.followerCount;
+    // }
     return sum;
 }

@@ -1,29 +1,9 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
-import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
+import { TiktokStats } from './stats_defs';
 
-export class TikTokStats {
-    timeRetrieved: number = 0;
-    link: string = '';
-    displayName: string = '';
-    handle: string = '';
-    likes: number = 0;
-    followerCount: number = 0;
-    followingCount: number = 0;
-    iconUrl: string = '';
-    iconBase64: string = '';
-
-    public print() {
-        console.log('TikTok ' + this.displayName + ' Info:');
-        console.log('Handle (@): ' + this.handle);
-        console.log('Total Followers: ' + this.followerCount);
-        console.log('Total Following: ' + this.followingCount);
-        console.log('Total Likes Received: ' + this.likes);
-    }
-}
-
-export async function getTikTokStatsArr(context: BrowserContext, usernames: string[]): Promise<TikTokStats[]> {
-    const stats: TikTokStats[] = [];
+export async function getTikTokStatsArr(context: BrowserContext, usernames: string[]): Promise<TiktokStats[]> {
+    const stats: TiktokStats[] = [];
     for (const username of usernames) {
         const data = await getTikTokStats(context, username);
         stats.push(data);
@@ -31,14 +11,13 @@ export async function getTikTokStatsArr(context: BrowserContext, usernames: stri
     return stats;
 }
 
-export async function getTikTokStats(context: BrowserContext, username: string): Promise<TikTokStats> {
+export async function getTikTokStats(context: BrowserContext, username: string): Promise<TiktokStats> {
     const content = await getPageContent(context, username);
-    const stats: TikTokStats = new TikTokStats();
-    // TODO - pull stats data from page content
+    const stats: TiktokStats = new TiktokStats();
     stats.timeRetrieved = new Date().getTime();
     stats.link = `https://www.tiktok.com/@${username}?lang=en`;
     stats.displayName = getDisplayNameFromPageContent(content);
-    stats.handle = username;
+    stats.username = username;
     stats.likes = getLikesCountFromPageContent(content);
     stats.followerCount = getFollowerCountFromPageContent(content);
     stats.followingCount = getFollowingCountFromPageContent(content);

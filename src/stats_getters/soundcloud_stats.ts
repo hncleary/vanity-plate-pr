@@ -1,25 +1,7 @@
 import { BrowserContext, Page } from 'playwright';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
+import { SoundCloudStats } from './stats_defs';
 
-export class SoundCloudStats {
-    timeRetrieved: number = 0;
-    link: string = '';
-    displayName: string = '';
-    username: string = ';';
-    followers: number = 0;
-    iconUrl: string = '';
-    iconBas64: string = '';
-    following: number = 0;
-    tracks: number = 0;
-
-    public print() {
-        console.log('SoundCloud ' + this.displayName + ' Info:');
-        console.log('Username: ' + this.username);
-        console.log('Total Followers: ' + this.followers);
-        console.log('Following: ' + this.following);
-        console.log('Tracks: ' + this.tracks);
-    }
-}
 export async function getSoundcloudStatsArr(context: BrowserContext, usernames: string[]): Promise<SoundCloudStats[]> {
     const soundcloudStats: SoundCloudStats[] = [];
     for (const handle of usernames) {
@@ -32,22 +14,16 @@ export async function getSoundcloudStatsArr(context: BrowserContext, usernames: 
 /** Get an object containing info and statistics for a soundcloud profile given a browser context and username */
 export async function getSoundcloudStats(context: BrowserContext, username: string): Promise<SoundCloudStats> {
     const content: string = await getSoundCloudPageContent(context, username);
-    const name = getDisplayNameFromContent(content);
-    const followers: number = getFollowersFromContent(content);
-    const following: number = getFollowingFromContent(content);
-    const trackCount: number = getTrackCountFromContent(content);
     const stats = new SoundCloudStats();
-    const iconUrl = getProfileImgUrlFromContent(content);
-    const iconBase64: string = await getBase64ImageFromUrl(iconUrl);
     stats.timeRetrieved = new Date().getTime();
     stats.link = `https://soundcloud.com/${username}`;
-    stats.displayName = name;
+    stats.displayName = getDisplayNameFromContent(content);
     stats.username = username;
-    stats.followers = followers;
-    stats.iconUrl = iconUrl;
-    stats.iconBas64 = iconBase64;
-    stats.following = following;
-    stats.tracks = trackCount;
+    stats.followerCount = getFollowersFromContent(content);
+    stats.followingCount = getFollowingFromContent(content);
+    stats.tracks = getTrackCountFromContent(content);
+    stats.iconUrl = getProfileImgUrlFromContent(content);
+    stats.iconBase64 = await getBase64ImageFromUrl(stats.iconUrl);
     return stats;
 }
 

@@ -2,37 +2,7 @@ import { BrowserContext, Page, chromium } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
 import { systemHasDisplay } from '../helper_functions/has_display';
-
-export class TwitterStats {
-    timeRetrieved: number = -1;
-    link: string = '';
-    displayName: string = '';
-    handle: string = ';';
-    totalTweets: number = -1;
-    followerCount: number = -1;
-    followingCount: number = -1;
-    iconUrl: string = '';
-    iconBase64: string = '';
-
-    public print() {
-        console.log('Twitter ' + this.displayName + ' Info:');
-        console.log('Handle (@): ' + this.handle);
-        console.log('Total Followers: ' + this.followerCount);
-        console.log('Total Following: ' + this.followingCount);
-        console.log('Total Tweets: ' + this.totalTweets);
-    }
-    // ensure that none of the current values are equal to the constructor defaults
-    public isValid() {
-        return (
-            this.timeRetrieved > 0 &&
-            this.link !== '' &&
-            this.handle !== '' &&
-            this.totalTweets > 0 &&
-            this.followerCount > 0 &&
-            this.followingCount > 0
-        );
-    }
-}
+import { TwitterStats } from './stats_defs';
 
 export async function getTwitterStatsArr(context: BrowserContext, handles: string[]): Promise<TwitterStats[]> {
     const stats: TwitterStats[] = [];
@@ -65,7 +35,7 @@ export async function getTwitterStats(context: BrowserContext, handle: string): 
     stats.timeRetrieved = new Date().getTime();
     stats.link = `https://twitter.com/${handle}`;
     stats.displayName = getDisplayNameFromContent(content);
-    stats.handle = handle;
+    stats.username = handle;
     stats.totalTweets = getPostsFromContent(content);
     stats.followerCount = getFollowersFromContent(content);
     stats.followingCount = getFollowingFromContent(content);
@@ -151,7 +121,7 @@ export async function getNitterStats(context: BrowserContext, handle: string): P
     stats.timeRetrieved = new Date().getTime();
     stats.link = `https://twitter.com/${handle}`;
     stats.displayName = getDisplayNameFromNitterContent(content);
-    stats.handle = handle;
+    stats.username = handle;
     stats.totalTweets = getPostsFromNitterContent(content);
     stats.followerCount = getFollowersFromNitterContent(content);
     stats.followingCount = getFollowingFromNitterContent(content);

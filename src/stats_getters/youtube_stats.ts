@@ -1,28 +1,11 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
-
-export class YtStats {
-    timeRetrieved: number = 0;
-    link: string = '';
-    displayName: string = '';
-    handle: string = '';
-    totalViews: number = 0;
-    subscribers: number = 0;
-    iconUrl: string = '';
-    iconBas64: string = '';
-
-    public print() {
-        console.log('YouTube ' + this.displayName + ' Info:');
-        console.log('Handle (@): ' + this.handle);
-        console.log('Total Views: ' + this.totalViews);
-        console.log('Total Subscribers: ' + this.subscribers);
-    }
-}
+import { YoutubeStats } from './stats_defs';
 
 /** Given an array of channel handles, return an array of corresponding youtube stats objects */
-export async function getYoutubeStatsArr(context: BrowserContext, channelHandles: string[]): Promise<YtStats[]> {
-    const youtubeStats: YtStats[] = [];
+export async function getYoutubeStatsArr(context: BrowserContext, channelHandles: string[]): Promise<YoutubeStats[]> {
+    const youtubeStats: YoutubeStats[] = [];
     for (const handle of channelHandles) {
         const data = await getYoutubeStats(context, handle);
         youtubeStats.push(data);
@@ -31,22 +14,18 @@ export async function getYoutubeStatsArr(context: BrowserContext, channelHandles
 }
 
 /** Get an object containing info and statistics given a browser context and channel @ */
-export async function getYoutubeStats(context: BrowserContext, channelHandle: string): Promise<YtStats> {
+export async function getYoutubeStats(context: BrowserContext, channelHandle: string): Promise<YoutubeStats> {
     const urlExt: string = `/@${channelHandle}/about`;
     const content: string = await getYoutubePageContent(context, urlExt);
-    const channelName: string = getDisplayNameFromPageContent(content);
-    const views: number = getViewsFromPageContent(content);
-    const subs: number = getSubsFromPageContent(content);
-    const iconUrl: string = getImageUrlFromPageContent(content);
-    const iconBase64: string = await getBase64ImageFromUrl(iconUrl);
-    const stats = new YtStats();
+
+    const stats = new YoutubeStats();
     stats.link = `https://www.youtube.com/@${channelHandle}/`;
-    stats.displayName = channelName;
-    stats.handle = channelHandle;
-    stats.totalViews = views;
-    stats.subscribers = subs;
-    stats.iconUrl = iconUrl;
-    stats.iconBas64 = iconBase64;
+    stats.displayName = getDisplayNameFromPageContent(content);
+    stats.username = getDisplayNameFromPageContent(content);
+    stats.totalViews = getViewsFromPageContent(content);
+    stats.followerCount = getSubsFromPageContent(content);
+    stats.iconUrl = getImageUrlFromPageContent(content);
+    stats.iconBase64 = await getBase64ImageFromUrl(stats.iconUrl);
     stats.timeRetrieved = new Date().getTime();
     return stats;
 }
