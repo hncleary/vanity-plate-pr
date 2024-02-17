@@ -2,11 +2,11 @@
     "id": "test",
     "displayName": "Testing",
     "youtubeHandles": ["google"],
-    "instagramHandles": [],
+    "instagramHandles": ["zuck"],
     "spotifyArtistIds": ["3WrFJ7ztbogyGnTHbHJFl2"],
     "newgroundsUsernames": ["tomfulp"],
     "soundcloudUsernames": ["soundcloud"],
-    "twitterHandles": [],
+    "twitterHandles": ["elonmusk"],
     "twitchUsernames": ["ninja"],
     "tiktokUsernames": ["khaby.lame"]
 }

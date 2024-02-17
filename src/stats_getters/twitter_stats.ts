@@ -4,24 +4,28 @@ import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch'
 import { systemHasDisplay } from '../helper_functions/has_display';
 import { TwitterStats } from './stats_defs';
 
+export const NITTER_ENABLED = false;
+
 export async function getTwitterStatsArr(context: BrowserContext, handles: string[]): Promise<TwitterStats[]> {
     const stats: TwitterStats[] = [];
     for (const handle of handles) {
         let data: TwitterStats;
         data = await getTwitterStats(context, handle);
         // If data is not valid, retry getting stats for the user with a headful browser on nitter.net
-        if (!data.isValid()) {
-            const hasDisplay = await systemHasDisplay();
-            console.log('System Has Display: ' + hasDisplay);
-            if (hasDisplay) {
-                const headfulBrowser = await chromium.launch({ headless: false });
-                const headfulContext: BrowserContext = await headfulBrowser.newContext({
-                    userAgent:
-                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' +
-                        ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-                });
-                data = await getNitterStats(headfulContext, handle);
-                headfulBrowser.close();
+        if (NITTER_ENABLED) {
+            if (!data.isValid()) {
+                const hasDisplay = await systemHasDisplay();
+                console.log('System Has Display: ' + hasDisplay);
+                if (hasDisplay) {
+                    const headfulBrowser = await chromium.launch({ headless: false });
+                    const headfulContext: BrowserContext = await headfulBrowser.newContext({
+                        userAgent:
+                            'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' +
+                            ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+                    });
+                    data = await getNitterStats(headfulContext, handle);
+                    headfulBrowser.close();
+                }
             }
         }
         stats.push(data);

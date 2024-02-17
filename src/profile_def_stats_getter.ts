@@ -1,4 +1,4 @@
-import { chromium, BrowserContext } from 'playwright';
+import { chromium, BrowserContext, LaunchOptions } from 'playwright';
 import {
     getProfileDefJsonsList,
     getFileContents,
@@ -14,6 +14,7 @@ import {
     VanityPlateSumCollection,
 } from './profile_data_process/profile_data';
 import chalk = require('chalk');
+import { RASP_PI_CHROMIUM_PATH, isRaspberryPi } from './helper_functions/chromium_raspberry_pi';
 
 export async function profileStatsGetter(
     inputDir: string = './profile-defs/',
@@ -24,7 +25,12 @@ export async function profileStatsGetter(
         console.log('Specified profile: ' + specifiedProfile);
     }
     // Launch playwright browser
-    const browser = await chromium.launch();
+    let launchOptions: LaunchOptions = {};
+    if (isRaspberryPi()) {
+        console.log('RUNNING ON RASPBERRY PI');
+        launchOptions = { channel: 'chrome', executablePath: RASP_PI_CHROMIUM_PATH };
+    }
+    const browser = await chromium.launch(launchOptions);
     // Set user agent to prevent web scrape detection
     const context: BrowserContext = await browser.newContext({
         userAgent:
@@ -54,6 +60,7 @@ export async function profileStatsGetter(
             const profileStats: VanityPlateProfileStats = await getProfileStats(context, profile);
 
             // TODO - Validate retrieved stats to ensure that database doesn't regress (values should not be set to default -1 or 0 on error)
+            VanityPlateProfileStats.printAll(profileStats);
 
             // Write cumulative profile stats to .json
             await writeProfileStatsToJson(profile, profileStats, outputDir);
