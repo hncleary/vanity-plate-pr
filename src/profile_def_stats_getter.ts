@@ -57,6 +57,7 @@ export async function profileStatsGetter(
             // Get the time at which the process for this user started
             const timeStart = new Date().getTime();
             console.log(`[[Getting stats for ${profile.id}]]`);
+
             const profileStats: VanityPlateProfileStats = await getProfileStats(context, profile);
 
             // TODO - Validate retrieved stats to ensure that database doesn't regress (values should not be set to default -1 or 0 on error)

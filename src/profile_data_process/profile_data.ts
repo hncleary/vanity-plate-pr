@@ -16,6 +16,7 @@ import {
     TwitterStats,
     YoutubeStats,
 } from '../stats_getters/stats_defs';
+import chalk = require('chalk');
 
 /** Profile definition defining lists of social identifiers */
 export class VanityPlateProfile {
@@ -84,47 +85,64 @@ export class VanityPlateSumCollection {
 /** Get all corresponding stats objects for a profile */
 export async function getProfileStats(
     context: BrowserContext,
-    profileDef: VanityPlateProfile
+    profileDef: VanityPlateProfile,
+    errCount: number = 0
 ): Promise<VanityPlateProfileStats> {
-    const profileStats: VanityPlateProfileStats = new VanityPlateProfileStats();
-    // Set profile id for later reference
-    profileStats.id = profileDef.id;
-    // Set profile display name for later reference
-    profileStats.displayName = profileDef.displayName;
-    // Get stats for all of the profile's YouTube accounts
-    if (!!profileDef?.youtubeHandles) {
-        profileStats.youtubeStats = await getYoutubeStatsArr(context, profileDef.youtubeHandles);
+    try {
+        const profileStats: VanityPlateProfileStats = new VanityPlateProfileStats();
+        // Set profile id for later reference
+        profileStats.id = profileDef.id;
+        // Set profile display name for later reference
+        profileStats.displayName = profileDef.displayName;
+        // Get stats for all of the profile's YouTube accounts
+        if (!!profileDef?.youtubeHandles) {
+            profileStats.youtubeStats = await getYoutubeStatsArr(context, profileDef.youtubeHandles);
+        }
+        // Get stats for all of the profile's Instagram handles
+        if (!!profileDef?.instagramHandles) {
+            profileStats.instaStats = await getInstagramStatsArr(context, profileDef.instagramHandles);
+        }
+        // Get stats for all of the profile's Spotify artist IDs
+        if (!!profileDef?.spotifyArtistIds) {
+            profileStats.spotifyStats = await getSpotifyStatsArr(context, profileDef.spotifyArtistIds);
+        }
+        // Get stats for all of the profile's Newgrounds usernames
+        if (!!profileDef?.newgroundsUsernames) {
+            profileStats.newgroundsStats = await getNewgroundsStatsArr(context, profileDef.newgroundsUsernames);
+        }
+        // Get stats for all of the profile's SoundCloud usernames
+        if (!!profileDef?.soundcloudUsernames) {
+            profileStats.soundcloudStats = await getSoundcloudStatsArr(context, profileDef.soundcloudUsernames);
+        }
+        // Get stats for all of the profile's twitter handles
+        if (!!profileDef?.twitterHandles) {
+            profileStats.twitterStats = await getTwitterStatsArr(context, profileDef.twitterHandles);
+        }
+        // Get stats for all of the profile's twitch usernames
+        if (!!profileDef?.twitchUsernames) {
+            profileStats.twitchStats = await getTwitchStatsArr(context, profileDef.twitchUsernames);
+        }
+        // Get stats for all of the profile's tik tok usernames
+        if (!!profileDef?.tiktokUsernames) {
+            profileStats.tiktokStats = await getTikTokStatsArr(context, profileDef.tiktokUsernames);
+        }
+        return profileStats;
+    } catch (err) {
+        if (errCount < 5) {
+            console.log(
+                chalk.yellow(
+                    `Encountered issue retrieving stats for profile ${profileDef.displayName} on attempt ${
+                        errCount + 1
+                    }. Trying again...`
+                )
+            );
+            errCount++;
+            return await getProfileStats(context, profileDef, errCount);
+        } else {
+            console.error(err);
+            throw err;
+        }
     }
-    // Get stats for all of the profile's Instagram handles
-    if (!!profileDef?.instagramHandles) {
-        profileStats.instaStats = await getInstagramStatsArr(context, profileDef.instagramHandles);
-    }
-    // Get stats for all of the profile's Spotify artist IDs
-    if (!!profileDef?.spotifyArtistIds) {
-        profileStats.spotifyStats = await getSpotifyStatsArr(context, profileDef.spotifyArtistIds);
-    }
-    // Get stats for all of the profile's Newgrounds usernames
-    if (!!profileDef?.newgroundsUsernames) {
-        profileStats.newgroundsStats = await getNewgroundsStatsArr(context, profileDef.newgroundsUsernames);
-    }
-    // Get stats for all of the profile's SoundCloud usernames
-    if (!!profileDef?.soundcloudUsernames) {
-        profileStats.soundcloudStats = await getSoundcloudStatsArr(context, profileDef.soundcloudUsernames);
-    }
-    // Get stats for all of the profile's twitter handles
-    if (!!profileDef?.twitterHandles) {
-        profileStats.twitterStats = await getTwitterStatsArr(context, profileDef.twitterHandles);
-    }
-    // Get stats for all of the profile's twitch usernames
-    if (!!profileDef?.twitchUsernames) {
-        profileStats.twitchStats = await getTwitchStatsArr(context, profileDef.twitchUsernames);
-    }
-    // Get stats for all of the profile's tik tok usernames
-    if (!!profileDef?.tiktokUsernames) {
-        profileStats.tiktokStats = await getTikTokStatsArr(context, profileDef.tiktokUsernames);
-    }
-
-    return profileStats;
 }
 
 export function getProfileStatsSummation(
@@ -141,7 +159,9 @@ export function getProfileStatsSummation(
         const accounts = stats[platform];
         /** Loop over each account listed within the platform */
         for (const account of accounts) {
-            sum.totalFollowers += account.followerCount;
+            if (!!account?.followerCount) {
+                sum.totalFollowers += account.followerCount;
+            }
         }
     });
 

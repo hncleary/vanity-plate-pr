@@ -3,7 +3,7 @@
         "main": "npx ts-node src/main.ts",
         "test": "npx ts-node src/tests/test.ts",
         "filtered-test": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/",
-        "db": "npm run main ../vanity-plate-db/profile-defs/ ../vanity-plate-db/stats"
+        "db": "npm run main ../vanity-plate-db/profile-defs/ ../vanity-plate-db/stats-v2"
     },
     "dependencies": {
         "chalk": "^4.1.2",

@@ -3,6 +3,7 @@ import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_conve
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
 import chalk = require('chalk');
 import { InstagramStats } from './stats_defs';
+import { writeHtmlToFile } from '../helper_functions/def_files';
 
 /** Get an array of objects containing instagram info and statistics given a browser context and account @'s */
 export async function getInstagramStatsArr(context: BrowserContext, handles: string[]): Promise<InstagramStats[]> {
@@ -16,28 +17,59 @@ export async function getInstagramStatsArr(context: BrowserContext, handles: str
 }
 
 /** Get an object containing instagram info and statistics given a browser context and account @ */
-export async function getInstagramStats(context: BrowserContext, handle: string): Promise<InstagramStats> {
-    const urlExt = `/${handle}`;
-    const content: string = await getInstagramPageContent(context, urlExt);
-
-    const iconUrl: string = getImageUrlFromPageContent(content);
-    let iconBase64: string = '';
+export async function getInstagramStats(
+    context: BrowserContext,
+    handle: string,
+    errCount: number = 0
+): Promise<InstagramStats> {
     try {
-        iconBase64 = await getBase64ImageFromUrl(iconUrl);
-    } catch {
-        console.error(chalk.yellow('Unable to fetch image from ' + iconUrl));
-    }
+        const urlExt = `/${handle}`;
+        const content: string = await getInstagramPageContent(context, urlExt);
 
-    const stats = new InstagramStats();
-    stats.timeRetrieved = new Date().getTime();
-    stats.link = `https://www.instagram.com/${handle}`;
-    stats.displayName = getDisplayNameFromContent(content, handle);
-    stats.username = handle;
-    stats.totalPosts = getPostCountFromContent(content);
-    stats.followerCount = getFollowersFromContent(content);
-    stats.followingCount = getFollowingFromContent(content);
-    stats.iconBase64 = iconBase64;
-    return stats;
+        const iconUrl: string = getImageUrlFromPageContent(content);
+        let iconBase64: string = '';
+        try {
+            iconBase64 = await getBase64ImageFromUrl(iconUrl);
+        } catch {
+            console.error(chalk.yellow('Unable to fetch image from ' + iconUrl));
+        }
+
+        const stats = new InstagramStats();
+        stats.timeRetrieved = new Date().getTime();
+        stats.link = `https://www.instagram.com/${handle}`;
+        stats.displayName = getDisplayNameFromContent(content, handle);
+        stats.username = handle;
+        stats.totalPosts = getPostCountFromContent(content);
+        stats.followerCount = getFollowersFromContent(content);
+        stats.followingCount = getFollowingFromContent(content);
+        stats.iconBase64 = iconBase64;
+        return stats;
+    } catch (err) {
+        if (errCount < 2) {
+            console.log(
+                chalk.yellow(
+                    `Encountered issue retrieving stats for instagram account @${handle} on attempt ${
+                        errCount + 1
+                    }. Trying again...`
+                )
+            );
+            errCount++;
+            return await getInstagramStats(context, handle, errCount);
+        } else {
+            console.error(err);
+            console.log(
+                chalk.red(
+                    `Encountered issue retrieving stats for instagram account @${handle} on attempt ${
+                        errCount + 1
+                    }. Returning default instagram object`
+                )
+            );
+            const instaDefault = new InstagramStats();
+            instaDefault.link = `https://www.instagram.com/${handle}`;
+            instaDefault.username = handle;
+            return;
+        }
+    }
 }
 
 /** Retrieve the HTML content on a instagram account page */
