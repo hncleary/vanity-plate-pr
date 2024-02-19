@@ -3,7 +3,16 @@
         "main": "npx ts-node src/main.ts",
         "test": "npx ts-node src/tests/test.ts",
         "filtered-test": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/",
-        "db": "npm run main ../vanity-plate-db/profile-defs/ ../vanity-plate-db/stats-v2"
+        "db": "npm run main ../vanity-plate-db/profile-defs/ ../vanity-plate-db/stats-v2",
+        "test-all": "npm run test-twitter && npm run test-instagram && npm run test-youtube && npm run test-spotify && npm run test-soundcloud && npm run test-twitch && npm run test-tiktok && npm run test-newgrounds",
+        "test-twitter": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ twitter-test",
+        "test-instagram": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ instagram-test",
+        "test-youtube": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ youtube-test",
+        "test-spotify": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ spotify-test",
+        "test-soundcloud": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ soundcloud-test",
+        "test-twitch": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ twitch-test",
+        "test-tiktok": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ tiktok-test",
+        "test-newgrounds": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ newgrounds-test"
     },
     "dependencies": {
         "chalk": "^4.1.2",

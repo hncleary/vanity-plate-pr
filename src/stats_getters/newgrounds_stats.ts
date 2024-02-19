@@ -1,32 +1,6 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
-
-export class NewgroundsStats {
-    timeRetrieved: number = 0;
-    link: string = '';
-    displayName: string = '';
-    username: string = '';
-    fans: number = 0;
-    // Post Counts
-    newsCount: number = 0;
-    moviesCount: number = 0;
-    artCount: number = 0;
-    audioCount: number = 0;
-    gamesCount: number = 0;
-    // Other Counts
-    favesCount: number = 0;
-    reviewsCount: number = 0;
-    postsCount: number = 0;
-
-    public print() {
-        console.log('Newgrounds ' + this.displayName + ' Info:');
-        console.log('Fans: ' + this.fans);
-        console.log(
-            `News: ${this.newsCount}; Movies: ${this.moviesCount}; Art: ${this.artCount}; Audio: ${this.audioCount}; Games: ${this.gamesCount};`
-        );
-        console.log(`Faves: ${this.favesCount}; Reviews: ${this.reviewsCount}; Posts: ${this.postsCount}; `);
-    }
-}
+import { NewgroundsStats } from './stats_defs';
 
 /** Given an array of newgrounds account usernames, return an array of corresponding newgrounds stats objects */
 export async function getNewgroundsStatsArr(context: BrowserContext, usernames: string[]): Promise<NewgroundsStats[]> {
@@ -42,13 +16,11 @@ export async function getNewgroundsStats(context: BrowserContext, username: stri
     const content: string = await getNewgroundsPageContent(context, username);
     const counts: Map<string, number> = getPostCountsFromPageContent(content);
     const stats = new NewgroundsStats();
-    const fansCount = getExactFansFromPageContent(content);
-    const displayName = getDisplayNameFromPageContent(content);
     stats.timeRetrieved = new Date().getTime();
     stats.link = `https://${username}.newgrounds.com/fans`;
-    stats.displayName = displayName;
+    stats.displayName = getDisplayNameFromPageContent(content);
     stats.username = username;
-    stats.fans = fansCount;
+    stats.followerCount = getExactFansFromPageContent(content);
     stats.newsCount = counts.get('NEWS') ?? 0;
     stats.moviesCount = counts.get('MOVIES') ?? 0;
     stats.artCount = counts.get('ART') ?? 0;

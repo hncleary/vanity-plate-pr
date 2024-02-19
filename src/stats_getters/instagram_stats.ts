@@ -11,7 +11,7 @@ export async function getInstagramStatsArr(context: BrowserContext, handles: str
     for (const handle of handles) {
         const data = await getInstagramStats(context, handle);
         instagramStats.push(data);
-        // data.isValid();
+        data.isValid();
     }
     return instagramStats;
 }
@@ -67,7 +67,7 @@ export async function getInstagramStats(
             const instaDefault = new InstagramStats();
             instaDefault.link = `https://www.instagram.com/${handle}`;
             instaDefault.username = handle;
-            return;
+            return instaDefault;
         }
     }
 }
