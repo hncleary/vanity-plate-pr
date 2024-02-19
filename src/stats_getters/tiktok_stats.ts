@@ -47,11 +47,11 @@ async function getPageContent(context: BrowserContext, username: string): Promis
 }
 
 function getDisplayNameFromPageContent(content: string): string {
-    const regex = /<title>.*TikTok<\/title>/gm;
+    const regex = /"user-subtitle"[^<]*<\/h2>/gm;
     const matches = content.match(regex);
     if (!!matches) {
         for (const match of matches) {
-            const txt = match.split('<title>').join('').split('| TikTok</title>').join('').trim().split('(@')[0].trim();
+            const txt = match.split('>')[1].split('<')[0];
             return txt;
         }
     }

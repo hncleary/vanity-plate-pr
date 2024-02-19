@@ -1,9 +1,8 @@
-import { BrowserContext, Page } from 'playwright';
+import { BrowserContext, Page, chromium } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
 import chalk = require('chalk');
 import { InstagramStats } from './stats_defs';
-import { writeHtmlToFile } from '../helper_functions/def_files';
 
 /** Get an array of objects containing instagram info and statistics given a browser context and account @'s */
 export async function getInstagramStatsArr(context: BrowserContext, handles: string[]): Promise<InstagramStats[]> {
@@ -45,7 +44,7 @@ export async function getInstagramStats(
         stats.iconBase64 = iconBase64;
         return stats;
     } catch (err) {
-        if (errCount < 2) {
+        if (errCount < 1) {
             console.log(
                 chalk.yellow(
                     `Encountered issue retrieving stats for instagram account @${handle} on attempt ${
