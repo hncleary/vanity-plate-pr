@@ -21,6 +21,7 @@ export async function getSpotifyStats(context: BrowserContext, artistId: string)
     const stats = new SpotifyStats();
     stats.timeRetrieved = new Date().getTime();
     stats.link = `https://open.spotify.com/artist/${artistId}`;
+    stats.username = artistId;
     stats.artistId = artistId;
     stats.displayName = artistName;
     stats.followerCount = monthlyListeners;

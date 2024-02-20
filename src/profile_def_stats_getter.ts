@@ -4,6 +4,7 @@ import {
     getFileContents,
     writeProfileStatsToJson,
     writeSummaryCollectionToJson,
+    getProfileStatsJsonData,
 } from './helper_functions/def_files';
 import {
     VanityPlateSum,
@@ -58,13 +59,23 @@ export async function profileStatsGetter(
             const timeStart = new Date().getTime();
             console.log(`[[Getting stats for ${profile.id}]]`);
 
-            const profileStats: VanityPlateProfileStats = await getProfileStats(context, profile);
+            let profileStats: VanityPlateProfileStats = new VanityPlateProfileStats();
+            const profileNewStats: VanityPlateProfileStats = await getProfileStats(context, profile);
 
-            // TODO - Validate retrieved stats to ensure that database doesn't regress (values should not be set to default -1 or 0 on error)
-            VanityPlateProfileStats.printAll(profileStats);
+            // Validate retrieved stats to ensure that database doesn't regress (values should not be set to default -1 or 0 on error), user old profile stats if new stats are not valid
+            VanityPlateProfileStats.printAll(profileNewStats);
+            const profileOldStats: VanityPlateProfileStats | undefined = await getProfileStatsJsonData(
+                profile.id,
+                './profile-defs/'
+            );
+            if (!!profileOldStats) {
+                profileStats = VanityPlateProfileStats.mergeStats(profileOldStats, profileNewStats);
+            } else {
+                profileStats = profileNewStats;
+            }
 
             // Write cumulative profile stats to .json
-            await writeProfileStatsToJson(profile, profileStats, outputDir);
+            await writeProfileStatsToJson(profile, profileNewStats, outputDir);
             // Get the time at which the process for this user ended
             const timeEnd = new Date().getTime();
             console.log(
@@ -72,7 +83,7 @@ export async function profileStatsGetter(
                     `-> Retrieved Stats for ${profile.id} in ${Math.ceil((timeEnd - timeStart) / 1000)} seconds`
                 )
             );
-            summaryList.push(getProfileStatsSummation(profile.id, profile.displayName, profileStats));
+            summaryList.push(getProfileStatsSummation(profile.id, profile.displayName, profileNewStats));
             profileCount++;
         }
     }

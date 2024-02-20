@@ -1,3 +1,4 @@
+import chalk = require('chalk');
 import {
     VanityPlateProfile,
     VanityPlateProfileStats,
@@ -12,6 +13,9 @@ const readFile = util.promisify(fs.readFile);
 
 export const profileDefsPath: string = 'profile-defs';
 
+/** Write content to file in .html format
+ * @NOTE Do note include '.html' in the filename parameter - it will be appended
+ */
 export async function writeHtmlToFile(filename: string, content: string): Promise<void> {
     fs.writeFile(`${profileDefsPath}/${filename}.html`, content, (err) => {
         if (err) throw err;
@@ -31,6 +35,7 @@ export async function writeProfileStatsToJson(
     }
 }
 
+/** Write a VanityPlateSumCollection to the default .json file in the specified output directory */
 export async function writeSummaryCollectionToJson(
     summaryCollection: VanityPlateSumCollection,
     outputDir: string
@@ -40,6 +45,20 @@ export async function writeSummaryCollectionToJson(
     });
 }
 
+/** If a stats json exists for the referenced user in the ouput directory, return the parsed data object */
+export async function getProfileStatsJsonData(
+    username: string,
+    outputDir: string
+): Promise<VanityPlateProfileStats | undefined> {
+    const json = await getFileContents(`${outputDir}${username}-stats.json`);
+    if (!!json) {
+        const profile: VanityPlateProfileStats = JSON.parse(json);
+        return profile;
+    } else {
+        return undefined;
+    }
+}
+
 /** Given a profiles identifying string, return their defined object */
 export async function getProfileJsonDef(username: string, inputDir: string): Promise<VanityPlateProfile> {
     const json = await getFileContents(`${inputDir}/${username}.json`);
@@ -47,7 +66,7 @@ export async function getProfileJsonDef(username: string, inputDir: string): Pro
     return profile;
 }
 
-// Get a list of json files within the profile/defs directory
+/** Get a list of json files within the profile/defs directory */
 export async function getProfileDefJsonsList(inputDir: string): Promise<string[]> {
     const dir = await fs.promises.opendir(inputDir);
     const fileNames: string[] = [];
@@ -61,6 +80,11 @@ export async function getProfileDefJsonsList(inputDir: string): Promise<string[]
 
 /** Get the string contents of a file given location and name */
 export async function getFileContents(filename: string): Promise<string> {
-    const data = await readFile(filename, 'utf8');
-    return data;
+    try {
+        const data = await readFile(filename, 'utf8');
+        return data;
+    } catch (err) {
+        console.log(chalk.blue(`No file found for ${filename}`));
+        return '';
+    }
 }

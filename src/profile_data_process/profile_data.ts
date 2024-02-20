@@ -10,6 +10,7 @@ import { getTikTokStatsArr } from '../stats_getters/tiktok_stats';
 import {
     InstagramStats,
     NewgroundsStats,
+    ProfileStatsBase,
     SoundCloudStats,
     SpotifyStats,
     TiktokStats,
@@ -60,6 +61,38 @@ export class VanityPlateProfileStats {
                 }
             }
         }
+    }
+    public static mergeStats(
+        oldStats: VanityPlateProfileStats,
+        newStats: VanityPlateProfileStats
+    ): VanityPlateProfileStats {
+        for (let platform of Object.keys(newStats)) {
+            if (typeof newStats[platform] !== 'string') {
+                if (!!newStats[platform] && newStats[platform].length > 0) {
+                    for (let statObj of newStats[platform]) {
+                        const isValid = ProfileStatsBase.isValid(statObj);
+                        if (!isValid) {
+                            const old = oldStats[platform].find((account) => account.username === statObj.username);
+                            if (!!old && ProfileStatsBase.isValid(old)) {
+                                console.log(
+                                    chalk.blue(
+                                        `Invalid stats object for @${statObj?.username} on ${statObj?.platformName} - using found old stats object`
+                                    )
+                                );
+                                statObj = old;
+                            } else {
+                                console.log(
+                                    chalk.blue(
+                                        `Invalid stats object for @${statObj?.username} on ${statObj?.platformName} - no previous valid object found`
+                                    )
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return newStats;
     }
 }
 

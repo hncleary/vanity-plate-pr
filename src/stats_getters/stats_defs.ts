@@ -31,6 +31,12 @@ export class ProfileStatsBase {
             console.log(`Following Count: ${this.followingCount}`);
         }
     }
+    public isValid() {
+        return !!this.platformName && !!this.username && this.followerCount > -1;
+    }
+    public static isValid(stats: ProfileStatsBase) {
+        return !!stats.platformName && !!stats.username && stats.followerCount > -1;
+    }
 }
 
 /** Stats associated with instagram accounts */
@@ -41,11 +47,11 @@ export class InstagramStats extends ProfileStatsBase {
         super();
         this.platformName = 'Instagram';
     }
-    public print() {
+    public override print() {
         super.print();
         console.log(`Total Posts: ${this.totalPosts}`);
     }
-    public isValid(): boolean {
+    public override isValid(): boolean {
         let isValid = true;
         if (!this.iconBase64) {
             console.log(chalk.yellow(`No instagram icon set in profile (@${this.username})`));
@@ -92,7 +98,7 @@ export class NewgroundsStats extends ProfileStatsBase {
         this.platformName = 'Newgrounds';
         this.followerLabel = 'Fans';
     }
-    public print() {
+    public override print() {
         super.print();
         console.log(
             `News: ${this.newsCount}; Movies: ${this.moviesCount}; Art: ${this.artCount}; Audio: ${this.audioCount}; Games: ${this.gamesCount};`
@@ -108,7 +114,7 @@ export class SoundCloudStats extends ProfileStatsBase {
         super();
         this.platformName = 'SoundCloud';
     }
-    public print() {
+    public override print() {
         super.print();
         console.log('Tracks: ' + this.tracks);
     }
@@ -147,7 +153,7 @@ export class TwitterStats extends ProfileStatsBase {
         super();
         this.platformName = 'Twitter';
     }
-    public isValid() {
+    public override isValid() {
         return (
             this.timeRetrieved > 0 &&
             this.link !== '' &&
