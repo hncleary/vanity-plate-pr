@@ -62,6 +62,8 @@ export class VanityPlateProfileStats {
             }
         }
     }
+
+    /** Given the new stats object and its previous iteration, return the set of most recent valid profile stats */
     public static mergeStats(
         oldStats: VanityPlateProfileStats,
         newStats: VanityPlateProfileStats
@@ -69,10 +71,25 @@ export class VanityPlateProfileStats {
         for (let platform of Object.keys(newStats)) {
             if (typeof newStats[platform] !== 'string') {
                 if (!!newStats[platform] && newStats[platform].length > 0) {
-                    for (let statObj of newStats[platform]) {
+                    let statObj: ProfileStatsBase;
+                    for (statObj of newStats[platform]) {
+                        // Find the previous iteration of the stats object for the profile/platform
+                        const old: ProfileStatsBase = oldStats[platform].find(
+                            (account) => account.username === statObj.username
+                        );
+
+                        // Check to see which stats object has a valid profile icon saved, use the most recent valid profile icon
+                        if (!statObj.iconBase64 && !!old.iconBase64) {
+                            statObj.iconBase64 = old.iconBase64;
+                            statObj.iconUrl = old.iconUrl;
+                        } else if (!old.iconBase64 && !!statObj.iconBase64) {
+                            old.iconBase64 = statObj.iconBase64;
+                            old.iconUrl = statObj.iconUrl;
+                        }
+
+                        // Check to see if the new stats object is valid. If not, keep the old stats object
                         const isValid = ProfileStatsBase.isValid(statObj);
                         if (!isValid) {
-                            const old = oldStats[platform].find((account) => account.username === statObj.username);
                             if (!!old && ProfileStatsBase.isValid(old)) {
                                 console.log(
                                     chalk.blue(
