@@ -40,6 +40,8 @@ export async function profileStatsGetter(
     });
     /** Get the list of available profile definition JSON files*/
     let profileDefList: string[] = await getProfileDefJsonsList(inputDir);
+    /** Shuffle the list of available profile definitions so that the retrieved order is different each time */
+    profileDefList = profileDefList.sort((a, b) => 0.5 - Math.random());
     /** Filter out any profile defs that don't match the specified profile (if there is one specified) */
     if (!!specifiedProfile) {
         profileDefList = profileDefList.filter((p) => p == `${specifiedProfile}.json`);
