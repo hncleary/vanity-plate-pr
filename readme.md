@@ -41,7 +41,7 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [ ] Additional Links
 
     Additional Tasks:
-    - [ ] Add system for merging stats objects (invalid / empty parameter values should not overwrite what was previously valid)
+    - [x] Add system for merging stats objects (invalid / empty parameter values should not overwrite what was previously valid)
     - [ ] Add system for optionally retrieving profile icon image data
     - [ ] Add directory creation system
     - [x] Create additional repo for angular site
