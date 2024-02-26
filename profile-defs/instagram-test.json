@@ -1,12 +1,5 @@
 {
     "id": "instagram-test",
     "displayName": "instagram test",
-    "youtubeHandles": [],
-    "instagramHandles": ["zuck"],
-    "spotifyArtistIds": [],
-    "newgroundsUsernames": [],
-    "soundcloudUsernames": [],
-    "twitterHandles": [],
-    "twitchUsernames": [],
-    "tiktokUsernames": []
+    "instagramHandles": ["zuck"]
 }

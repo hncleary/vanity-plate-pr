@@ -7,6 +7,7 @@
         "test-all": "npm run test-twitter && npm run test-instagram && npm run test-youtube && npm run test-spotify && npm run test-soundcloud && npm run test-twitch && npm run test-tiktok && npm run test-newgrounds",
         "test-twitter": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ twitter-test",
         "test-instagram": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ instagram-test",
+        "test-threads": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ threads-test",
         "test-youtube": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ youtube-test",
         "test-spotify": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ spotify-test",
         "test-soundcloud": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ soundcloud-test",

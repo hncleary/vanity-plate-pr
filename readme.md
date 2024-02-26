@@ -22,7 +22,7 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [x] Spotify
     - [x] Newgrounds
     - [x] Twitch
-    - [ ] Threads (Instagram)
+    - [x] Threads (Instagram)
     - [ ] Facebook
     - [ ] Sketchfab (?)
     - [ ] Reddit (?)

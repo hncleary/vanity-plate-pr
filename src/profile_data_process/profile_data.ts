@@ -13,12 +13,14 @@ import {
     ProfileStatsBase,
     SoundCloudStats,
     SpotifyStats,
+    ThreadsStats,
     TiktokStats,
     TwitchStats,
     TwitterStats,
     YoutubeStats,
 } from '../stats_getters/stats_defs';
 import chalk = require('chalk');
+import { getThreadsStatsArr } from '../stats_getters/threads_stats';
 
 /** Profile definition defining lists of social identifiers */
 export class VanityPlateProfile {
@@ -27,6 +29,7 @@ export class VanityPlateProfile {
     // Account Lists
     public youtubeHandles: string[] = [];
     public instagramHandles: string[] = [];
+    public threadsHandles: string[] = [];
     public spotifyArtistIds: string[] = [];
     public newgroundsUsernames: string[] = [];
     public soundcloudUsernames: string[] = [];
@@ -42,6 +45,7 @@ export class VanityPlateProfileStats {
     // Account Stats
     public youtubeStats: YoutubeStats[] = [];
     public instaStats: InstagramStats[] = [];
+    public threadsStats: ThreadsStats[] = [];
     public spotifyStats: SpotifyStats[] = [];
     public newgroundsStats: NewgroundsStats[] = [];
     public soundcloudStats: SoundCloudStats[] = [];
@@ -153,6 +157,10 @@ export async function getProfileStats(
         // Get stats for all of the profile's Instagram handles
         if (!!profileDef?.instagramHandles) {
             profileStats.instaStats = await getInstagramStatsArr(context, profileDef.instagramHandles);
+        }
+        // Get stats for all of the profile's Threads usernames
+        if (!!profileDef?.threadsHandles) {
+            profileStats.threadsStats = await getThreadsStatsArr(context, profileDef.threadsHandles);
         }
         // Get stats for all of the profile's Spotify artist IDs
         if (!!profileDef?.spotifyArtistIds) {
