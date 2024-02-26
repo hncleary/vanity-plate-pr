@@ -78,18 +78,13 @@ export class VanityPlateProfileStats {
                     let statObj: ProfileStatsBase;
                     for (statObj of newStats[platform]) {
                         // Find the previous iteration of the stats object for the profile/platform
-                        const old: ProfileStatsBase = oldStats[platform].find(
+                        const old: ProfileStatsBase = oldStats[platform]?.find(
                             (account) => account.username === statObj.username
                         );
                         if (!!old) {
                             // Check to see which stats object has a valid profile icon saved, use the most recent valid profile icon
-                            if (!statObj.iconBase64 && !!old.iconBase64) {
-                                statObj.iconBase64 = old.iconBase64;
-                                statObj.iconUrl = old.iconUrl;
-                            } else if (!old.iconBase64 && !!statObj.iconBase64) {
-                                old.iconBase64 = statObj.iconBase64;
-                                old.iconUrl = statObj.iconUrl;
-                            }
+                            statObj.iconBase64 = statObj.iconBase64 ?? old.iconBase64;
+                            statObj.iconUrl = statObj.iconUrl ?? old.iconUrl;
                         }
 
                         // Check to see if the new stats object is valid. If not, keep the old stats object
