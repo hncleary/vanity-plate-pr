@@ -2,6 +2,7 @@ import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
 import { YoutubeStats } from './stats_defs';
+import { getFileContents, writeHtmlToFile } from '../helper_functions/def_files';
 
 /** Given an array of channel handles, return an array of corresponding youtube stats objects */
 export async function getYoutubeStatsArr(context: BrowserContext, channelHandles: string[]): Promise<YoutubeStats[]> {
@@ -21,7 +22,7 @@ export async function getYoutubeStats(context: BrowserContext, channelHandle: st
     const stats = new YoutubeStats();
     stats.link = `https://www.youtube.com/@${channelHandle}/`;
     stats.displayName = getDisplayNameFromPageContent(content);
-    stats.username = getDisplayNameFromPageContent(content);
+    stats.username = channelHandle;
     stats.totalViews = getViewsFromPageContent(content);
     stats.followerCount = getSubsFromPageContent(content);
     stats.iconUrl = getImageUrlFromPageContent(content);
@@ -36,22 +37,23 @@ async function getYoutubePageContent(context: BrowserContext, urlExtension: stri
     const baseUrl = 'https://www.youtube.com';
     const fullUrl = baseUrl + urlExtension;
     await page.goto(fullUrl);
-    await page.waitForSelector('yt-formatted-string#subscriber-count');
+    await page.waitForTimeout(5000);
     const content = await page.content();
+    await writeHtmlToFile('youtube-test', content);
     await page.close();
     return content;
 }
 
 /** Given the entire HTML content of a channel's about page, return their total views */
 function getViewsFromPageContent(htmlContent: string): number {
-    const regex = /viewCountText[^{]*joinedDateText/gm;
+    const regex = /<td[^<]*class="style-scope[^<]*ytd-about-channel-renderer">[^<]*<\/td>/gm;
     const matches = htmlContent.match(regex);
     if (!!matches) {
         for (const match of matches) {
             if (match.toLowerCase().includes('views')) {
-                const viewsTxt: string = match.split(':"')[1].split('views"')[0];
-                const views: number = parseFloat(viewsTxt.split(' ')[0].replace(/,/g, ''));
-                return views;
+                const txt: string = match.split('>')[1].split('<')[0];
+                const numTxt = txt.split(' ')[0];
+                return parseFloat(numTxt);
             }
         }
     }
@@ -59,7 +61,7 @@ function getViewsFromPageContent(htmlContent: string): number {
 }
 /** Given the entire HTML content of a channel's about page, return their total subscribers */
 function getSubsFromPageContent(htmlContent: string): number {
-    const regex = /<yt-formatted-string id="subscriber-count".*<\/yt-formatted-string>/gm;
+    const regex = /<td[^<]*class="style-scope[^<]*ytd-about-channel-renderer">[^<]*<\/td>/gm;
     const matches = htmlContent.match(regex);
     if (!!matches) {
         for (const match of matches) {
@@ -74,12 +76,15 @@ function getSubsFromPageContent(htmlContent: string): number {
 }
 /** Given the entire HTML content of a channel's about page, return their channel display name */
 function getDisplayNameFromPageContent(htmlContent: string): string {
-    const regex = /<yt-formatted-string.*ytd-channel-name.*<\/yt-formatted-string>/gm;
+    const regex = /<yt-formatted-string[^<]*ytd-channel-name[^<]*<a[^<]*<\/a>/gm;
     const matches = htmlContent.match(regex);
     if (!!matches) {
         for (const match of matches) {
-            const nameTxt: string = match.split('>')[1].split('<')[0];
-            return nameTxt;
+            const items: string[] = match.split('>');
+            const f = items.find((item) => item.includes('</a'));
+            if (f) {
+                return f.split('</a')[0];
+            }
         }
     }
     return '';
