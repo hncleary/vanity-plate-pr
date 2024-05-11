@@ -74,13 +74,12 @@ function getSubsFromPageContent(htmlContent: string): number {
 }
 /** Given the entire HTML content of a channel's about page, return their channel display name */
 function getDisplayNameFromPageContent(htmlContent: string): string {
-    const regex =
-        /<div[^<]*class="page-header-view-model-wiz__page-header-headline-info"[^<]*<yt-dynamic-text-view-model[^<]*<h1[^<]*<span[^<]*<\/span/gm;
+    const regex = /{"urlCanonical":"[^"]*","title":"[^"]*"/gm;
     const matches = htmlContent.match(regex);
     if (!!matches) {
         for (const match of matches) {
-            const items: string[] = match.split('>');
-            return items[items.length - 1].split('<')[0];
+            const items: string[] = match.split('"').filter((item) => !!item);
+            return items[items.length - 1];
         }
     }
     return '';
