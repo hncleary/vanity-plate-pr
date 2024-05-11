@@ -2,7 +2,6 @@ import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
 import { YoutubeStats } from './stats_defs';
-import { getFileContents, writeHtmlToFile } from '../helper_functions/def_files';
 
 /** Given an array of channel handles, return an array of corresponding youtube stats objects */
 export async function getYoutubeStatsArr(context: BrowserContext, channelHandles: string[]): Promise<YoutubeStats[]> {
@@ -39,7 +38,6 @@ async function getYoutubePageContent(context: BrowserContext, urlExtension: stri
     await page.goto(fullUrl);
     await page.waitForTimeout(5000);
     const content = await page.content();
-    await writeHtmlToFile('youtube-test', content);
     await page.close();
     return content;
 }
@@ -76,15 +74,13 @@ function getSubsFromPageContent(htmlContent: string): number {
 }
 /** Given the entire HTML content of a channel's about page, return their channel display name */
 function getDisplayNameFromPageContent(htmlContent: string): string {
-    const regex = /<yt-formatted-string[^<]*ytd-channel-name[^<]*<a[^<]*<\/a>/gm;
+    const regex =
+        /<div[^<]*class="page-header-view-model-wiz__page-header-headline-info"[^<]*<yt-dynamic-text-view-model[^<]*<h1[^<]*<span[^<]*<\/span/gm;
     const matches = htmlContent.match(regex);
     if (!!matches) {
         for (const match of matches) {
             const items: string[] = match.split('>');
-            const f = items.find((item) => item.includes('</a'));
-            if (f) {
-                return f.split('</a')[0];
-            }
+            return items[items.length - 1].split('<')[0];
         }
     }
     return '';
