@@ -16,6 +16,7 @@ import {
 } from './profile_data_process/profile_data';
 import chalk = require('chalk');
 import { RASP_PI_CHROMIUM_PATH, isRaspberryPi } from './helper_functions/chromium_raspberry_pi';
+import { mergeStats } from './profile_data_process/merge_stats';
 
 export async function profileStatsGetter(
     inputDir: string = './profile-defs/',
@@ -68,10 +69,10 @@ export async function profileStatsGetter(
             VanityPlateProfileStats.printAll(profileNewStats);
             const profileOldStats: VanityPlateProfileStats | undefined = await getProfileStatsJsonData(
                 profile.id,
-                './profile-defs/'
+                outputDir
             );
             if (!!profileOldStats) {
-                profileStats = VanityPlateProfileStats.mergeStats(profileOldStats, profileNewStats);
+                profileStats = mergeStats(profileOldStats, profileNewStats);
             } else {
                 profileStats = profileNewStats;
             }

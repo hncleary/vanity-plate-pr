@@ -67,49 +67,18 @@ export class VanityPlateProfileStats {
         }
     }
 
-    /** Given the new stats object and its previous iteration, return the set of most recent valid profile stats */
-    public static mergeStats(
-        oldStats: VanityPlateProfileStats,
-        newStats: VanityPlateProfileStats
-    ): VanityPlateProfileStats {
-        for (let platform of Object.keys(newStats)) {
-            if (typeof newStats[platform] !== 'string') {
-                if (!!newStats[platform] && newStats[platform].length > 0) {
-                    let statObj: ProfileStatsBase;
-                    for (statObj of newStats[platform]) {
-                        // Find the previous iteration of the stats object for the profile/platform
-                        const old: ProfileStatsBase = oldStats[platform]?.find(
-                            (account) => account.username === statObj.username
-                        );
-                        if (!!old) {
-                            // Check to see which stats object has a valid profile icon saved, use the most recent valid profile icon
-                            statObj.iconBase64 = statObj.iconBase64 ?? old.iconBase64;
-                            statObj.iconUrl = statObj.iconUrl ?? old.iconUrl;
-                        }
-
-                        // Check to see if the new stats object is valid. If not, keep the old stats object
-                        const isValid = ProfileStatsBase.isValid(statObj);
-                        if (!isValid) {
-                            if (!!old && ProfileStatsBase.isValid(old)) {
-                                console.log(
-                                    chalk.blue(
-                                        `Invalid stats object for @${statObj?.username} on ${statObj?.platformName} - using found old stats object`
-                                    )
-                                );
-                                statObj = old;
-                            } else {
-                                console.log(
-                                    chalk.blue(
-                                        `Invalid stats object for @${statObj?.username} on ${statObj?.platformName} - no previous valid object found`
-                                    )
-                                );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return newStats;
+    public static getConcatStatsArray(profileStats: VanityPlateProfileStats): ProfileStatsBase[] {
+        return [
+            ...profileStats.youtubeStats,
+            ...profileStats.instaStats,
+            ...profileStats.newgroundsStats,
+            ...profileStats.soundcloudStats,
+            ...profileStats.spotifyStats,
+            ...profileStats.threadsStats,
+            ...profileStats.tiktokStats,
+            ...profileStats.twitchStats,
+            ...profileStats.twitterStats,
+        ];
     }
 }
 
