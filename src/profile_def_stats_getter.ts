@@ -17,6 +17,7 @@ import {
 import chalk = require('chalk');
 import { RASP_PI_CHROMIUM_PATH, isRaspberryPi } from './helper_functions/chromium_raspberry_pi';
 import { mergeStats } from './profile_data_process/merge_stats';
+import { rawToObject } from './helper_functions/raw_to_object';
 
 export async function profileStatsGetter(
     inputDir: string = './profile-defs/',
@@ -67,10 +68,11 @@ export async function profileStatsGetter(
 
             // Validate retrieved stats to ensure that database doesn't regress (values should not be set to default -1 or 0 on error), user old profile stats if new stats are not valid
             VanityPlateProfileStats.printAll(profileNewStats);
-            const profileOldStats: VanityPlateProfileStats | undefined = await getProfileStatsJsonData(
+            let profileOldStats: VanityPlateProfileStats | undefined = await getProfileStatsJsonData(
                 profile.id,
                 outputDir
             );
+            profileOldStats = rawToObject(profileOldStats, new VanityPlateProfileStats());
             if (!!profileOldStats) {
                 profileStats = mergeStats(profileOldStats, profileNewStats);
             } else {
