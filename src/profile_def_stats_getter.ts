@@ -97,7 +97,7 @@ export async function profileStatsGetter(
     console.log(
         `-> Retrieved Stats for ${profileCount} profiles in ${Math.ceil(
             (totalEndTime - totalStartTime) / 1000
-        )} seconds`
+        )} seconds (${(totalEndTime - totalStartTime) / (1000 * 60)} minutes)`
     );
     const sumCollection = new VanityPlateSumCollection(summaryList);
     writeSummaryCollectionToJson(sumCollection, outputDir);

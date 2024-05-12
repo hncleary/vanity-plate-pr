@@ -87,10 +87,10 @@ function getDisplayNameFromPageContent(htmlContent: string): string {
 /** Given the entire HTML content of a channel's about page, return their channel avatar image url */
 function getImageUrlFromPageContent(htmlContent: string): string {
     try {
-        const regex = /src="https:\/\/yt3.[^>]*"/gm;
-        const matches = htmlContent.match(regex);
-        if (!!matches && matches.length > 0) {
-            const url = matches[0].split('"')[1];
+        const imgRegex = /src="https:\/\/yt3.ggpht.com[^>]*"/gm;
+        const imgMatches = htmlContent.match(imgRegex);
+        if (!!imgMatches && imgMatches.length > 0) {
+            const url = imgMatches[0].split('"')[1];
             return url;
         }
     } catch (e) {
