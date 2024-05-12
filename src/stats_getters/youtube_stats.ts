@@ -50,7 +50,7 @@ function getViewsFromPageContent(htmlContent: string): number {
         for (const match of matches) {
             if (match.toLowerCase().includes('views')) {
                 const txt: string = match.split('>')[1].split('<')[0];
-                const numTxt = txt.split(' ')[0];
+                const numTxt = txt.split(' ')[0].split(',').join('');
                 return parseFloat(numTxt);
             }
         }
