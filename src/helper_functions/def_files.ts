@@ -54,7 +54,7 @@ export async function getProfileStatsJsonData(
     const json = await getFileContents(`${outputDir}${username}-stats.json`);
     if (!!json) {
         const profile: VanityPlateProfileStats = JSON.parse(json);
-        return profile;
+        return !!profile.id ? profile : undefined;
     } else {
         return undefined;
     }

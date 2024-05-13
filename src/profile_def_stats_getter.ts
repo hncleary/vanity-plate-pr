@@ -72,8 +72,8 @@ export async function profileStatsGetter(
                 profile.id,
                 outputDir
             );
-            profileOldStats = VanityPlateProfileStats.rawToObject(profileOldStats);
             if (!!profileOldStats) {
+                profileOldStats = VanityPlateProfileStats.rawToObject(profileOldStats);
                 profileStats = mergeStats(profileOldStats, profileNewStats);
             } else {
                 profileStats = profileNewStats;
