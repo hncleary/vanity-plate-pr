@@ -72,7 +72,7 @@ export async function profileStatsGetter(
                 profile.id,
                 outputDir
             );
-            profileOldStats = rawToObject(profileOldStats, new VanityPlateProfileStats());
+            profileOldStats = VanityPlateProfileStats.rawToObject(profileOldStats);
             if (!!profileOldStats) {
                 profileStats = mergeStats(profileOldStats, profileNewStats);
             } else {
@@ -94,11 +94,9 @@ export async function profileStatsGetter(
     }
     // Get the time at which the total process ended
     const totalEndTime = new Date().getTime();
-    console.log(
-        `-> Retrieved Stats for ${profileCount} profiles in ${Math.ceil(
-            (totalEndTime - totalStartTime) / 1000
-        )} seconds (${(totalEndTime - totalStartTime) / (1000 * 60)} minutes)`
-    );
+    const seconds = Math.ceil((totalEndTime - totalStartTime) / 1000);
+    const minutes = (seconds / 60).toFixed(2);
+    console.log(`-> Retrieved Stats for ${profileCount} profiles in ${seconds} seconds (${minutes} minutes)`);
     const sumCollection = new VanityPlateSumCollection(summaryList);
     writeSummaryCollectionToJson(sumCollection, outputDir);
     // Close the headless browser

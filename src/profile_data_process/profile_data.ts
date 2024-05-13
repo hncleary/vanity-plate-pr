@@ -21,6 +21,7 @@ import {
 } from '../stats_getters/stats_defs';
 import chalk = require('chalk');
 import { getThreadsStatsArr } from '../stats_getters/threads_stats';
+import { rawToObject } from '../helper_functions/raw_to_object';
 
 /** Profile definition defining lists of social identifiers */
 export class VanityPlateProfile {
@@ -79,6 +80,38 @@ export class VanityPlateProfileStats {
             ...profileStats.twitchStats,
             ...profileStats.twitterStats,
         ];
+    }
+
+    public static rawToObject(profileStats: VanityPlateProfileStats): VanityPlateProfileStats {
+        profileStats = rawToObject(profileStats, new VanityPlateProfileStats());
+        for (let profile of profileStats.youtubeStats) {
+            profile = rawToObject(profile, new YoutubeStats());
+        }
+        for (let profile of profileStats.instaStats) {
+            profile = rawToObject(profile, new InstagramStats());
+        }
+        for (let profile of profileStats.threadsStats) {
+            profile = rawToObject(profile, new ThreadsStats());
+        }
+        for (let profile of profileStats.spotifyStats) {
+            profile = rawToObject(profile, new SpotifyStats());
+        }
+        for (let profile of profileStats.newgroundsStats) {
+            profile = rawToObject(profile, new NewgroundsStats());
+        }
+        for (let profile of profileStats.soundcloudStats) {
+            profile = rawToObject(profile, new SoundCloudStats());
+        }
+        for (let profile of profileStats.twitterStats) {
+            profile = rawToObject(profile, new TwitterStats());
+        }
+        for (let profile of profileStats.twitchStats) {
+            profile = rawToObject(profile, new TwitchStats());
+        }
+        for (let profile of profileStats.tiktokStats) {
+            profile = rawToObject(profile, new TiktokStats());
+        }
+        return profileStats;
     }
 }
 

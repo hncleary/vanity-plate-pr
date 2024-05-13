@@ -36,7 +36,7 @@ async function getYoutubePageContent(context: BrowserContext, urlExtension: stri
     const baseUrl = 'https://www.youtube.com';
     const fullUrl = baseUrl + urlExtension;
     await page.goto(fullUrl);
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(3000);
     const content = await page.content();
     await page.close();
     return content;
@@ -88,7 +88,11 @@ function getDisplayNameFromPageContent(htmlContent: string): string {
 function getImageUrlFromPageContent(htmlContent: string): string {
     try {
         const imgRegex = /src="https:\/\/yt3.ggpht.com[^>]*"/gm;
-        const imgMatches = htmlContent.match(imgRegex);
+        let imgMatches = htmlContent.match(imgRegex);
+        if (!imgMatches || imgMatches.length === 0) {
+            const backupimgRegex = /src="https:\/\/yt3[^>]*"/gm;
+            imgMatches = htmlContent.match(backupimgRegex);
+        }
         if (!!imgMatches && imgMatches.length > 0) {
             const url = imgMatches[0].split('"')[1];
             return url;

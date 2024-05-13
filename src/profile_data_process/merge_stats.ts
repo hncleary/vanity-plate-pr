@@ -26,7 +26,9 @@ export function mergeStats(
     const profiles: ProfileStatsBase[] = VanityPlateProfileStats.getConcatStatsArray(newStats);
     for (let profile of profiles) {
         const matchingOldProfile: ProfileStatsBase | undefined = findMatchingOldStatsProfileObject(profile, oldStats);
-        profile = mergeProfile(matchingOldProfile, profile);
+        if (!!matchingOldProfile) {
+            profile = mergeProfile(matchingOldProfile, profile);
+        }
         returnStats = setProfileToStatsObject(profile, returnStats);
     }
     return returnStats;
@@ -107,8 +109,8 @@ function mergeProfile(oldProfile: ProfileStatsBase, newProfile: ProfileStatsBase
         console.log(
             chalk.blue(`Fell back to old base64 icon for @${newProfile?.username} on ${newProfile?.platformName}`)
         );
-        profileReturn.iconBase64 = oldProfile.iconBase64;
-        profileReturn.iconUrl = oldProfile.iconBase64;
+        profileReturn.iconBase64 = oldProfile?.iconBase64 ?? '';
+        profileReturn.iconUrl = oldProfile?.iconBase64 ?? '';
     }
 
     return profileReturn;

@@ -51,7 +51,7 @@ export async function getProfileStatsJsonData(
     outputDir: string
 ): Promise<VanityPlateProfileStats | undefined> {
     console.log(`Retrieving ${outputDir}${username}-stats.json`);
-    const json = await getFileContents(`${outputDir}/${username}-stats.json`);
+    const json = await getFileContents(`${outputDir}${username}-stats.json`);
     if (!!json) {
         const profile: VanityPlateProfileStats = JSON.parse(json);
         return profile;
