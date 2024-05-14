@@ -17,7 +17,6 @@ import {
 import chalk = require('chalk');
 import { RASP_PI_CHROMIUM_PATH, isRaspberryPi } from './helper_functions/chromium_raspberry_pi';
 import { mergeStats } from './profile_data_process/merge_stats';
-import { rawToObject } from './helper_functions/raw_to_object';
 
 export async function profileStatsGetter(
     inputDir: string = './profile-defs/',
@@ -80,7 +79,7 @@ export async function profileStatsGetter(
             }
 
             // Write cumulative profile stats to .json
-            await writeProfileStatsToJson(profile, profileNewStats, outputDir);
+            await writeProfileStatsToJson(profile, profileStats, outputDir);
             // Get the time at which the process for this user ended
             const timeEnd = new Date().getTime();
             console.log(

@@ -2,3 +2,4 @@ node_modules/*
 *-stats.json
 *.html
 *db_summary.json
+!src/tests/merge_stats_test/*.json
