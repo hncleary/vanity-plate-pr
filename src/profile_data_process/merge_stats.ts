@@ -1,5 +1,6 @@
 import chalk = require('chalk');
 import {
+    FacebookStats,
     InstagramStats,
     NewgroundsStats,
     ProfileStatsBase,
@@ -66,6 +67,9 @@ function setProfileToStatsObject(
             break;
         case 'YouTube':
             returnAccount.youtubeStats.push(profile as YoutubeStats);
+            break;
+        case 'Facebook':
+            returnAccount.facebookStats.push(profile as FacebookStats);
             break;
     }
     return returnAccount;

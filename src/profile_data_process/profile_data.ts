@@ -8,6 +8,7 @@ import { getTwitterStatsArr } from '../stats_getters/twitter_stats';
 import { getTwitchStatsArr } from '../stats_getters/twitch_stats';
 import { getTikTokStatsArr } from '../stats_getters/tiktok_stats';
 import {
+    FacebookStats,
     InstagramStats,
     NewgroundsStats,
     ProfileStatsBase,
@@ -22,6 +23,7 @@ import {
 import chalk = require('chalk');
 import { getThreadsStatsArr } from '../stats_getters/threads_stats';
 import { rawToObject } from '../helper_functions/raw_to_object';
+import { getFacebookStatsArr } from '../stats_getters/facebook_stats';
 
 /** Profile definition defining lists of social identifiers */
 export class VanityPlateProfile {
@@ -37,6 +39,7 @@ export class VanityPlateProfile {
     public twitterHandles: string[] = [];
     public twitchUsernames: string[] = [];
     public tiktokUsernames: string[] = [];
+    public facebookUsernames: string[] = [];
 }
 
 /** Object all stat object for a defined profile */
@@ -53,6 +56,7 @@ export class VanityPlateProfileStats {
     public twitterStats: TwitterStats[] = [];
     public twitchStats: TwitchStats[] = [];
     public tiktokStats: TiktokStats[] = [];
+    public facebookStats: FacebookStats[] = [];
 
     public static printAll(profileStats: VanityPlateProfileStats) {
         // Print All Stats
@@ -79,6 +83,7 @@ export class VanityPlateProfileStats {
             ...profileStats.tiktokStats,
             ...profileStats.twitchStats,
             ...profileStats.twitterStats,
+            ...profileStats.facebookStats,
         ];
     }
 
@@ -110,6 +115,9 @@ export class VanityPlateProfileStats {
         }
         for (let profile of profileStats.tiktokStats) {
             profile = rawToObject(profile, new TiktokStats());
+        }
+        for (let profile of profileStats.facebookStats) {
+            profile = rawToObject(profile, new FacebookStats());
         }
         return profileStats;
     }
@@ -182,6 +190,10 @@ export async function getProfileStats(
         // Get stats for all of the profile's tik tok usernames
         if (!!profileDef?.tiktokUsernames) {
             profileStats.tiktokStats = await getTikTokStatsArr(context, profileDef.tiktokUsernames);
+        }
+        // Get stats for all of the profile's facebook usernames
+        if (!!profileDef?.facebookUsernames) {
+            profileStats.facebookStats = await getFacebookStatsArr(context, profileDef.facebookUsernames);
         }
         return profileStats;
     } catch (err) {

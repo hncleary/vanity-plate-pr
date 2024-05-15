@@ -5,7 +5,7 @@
         "filtered-test": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/",
         "db": "npm run main ../vanity-plate-db/profile-defs/ ../vanity-plate-db/stats-v2/",
         "test-test": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ test",
-        "test-all": "npm run test-twitter && npm run test-instagram && npm run test-youtube && npm run test-spotify && npm run test-soundcloud && npm run test-twitch && npm run test-tiktok && npm run test-newgrounds",
+        "test-all": "npm run test-twitter && npm run test-instagram && npm run test-youtube && npm run test-spotify && npm run test-soundcloud && npm run test-twitch && npm run test-tiktok && npm run test-newgrounds && npm run test-facebook",
         "test-twitter": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ twitter-test",
         "test-instagram": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ instagram-test",
         "test-threads": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ threads-test",
@@ -15,6 +15,7 @@
         "test-twitch": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ twitch-test",
         "test-tiktok": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ tiktok-test",
         "test-newgrounds": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ newgrounds-test",
+        "test-facebook": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ facebook-test",
         "test-merge-func": "npx ts-node src/tests/merge_stats_test/test_merge_stats.ts"
     },
     "dependencies": {

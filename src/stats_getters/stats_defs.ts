@@ -182,3 +182,10 @@ export class YoutubeStats extends ProfileStatsBase {
         this.followerLabel = 'Subscribers';
     }
 }
+/** Stats associated with facebook page accounts */
+export class FacebookStats extends ProfileStatsBase {
+    constructor() {
+        super();
+        this.platformName = 'Facebook';
+    }
+}

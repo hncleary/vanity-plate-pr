@@ -23,7 +23,7 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [x] Newgrounds
     - [x] Twitch
     - [x] Threads (Instagram)
-    - [ ] Facebook
+    - [x] Facebook
     - [ ] Sketchfab (?)
     - [ ] Reddit (?)
     - [ ] Cameo (?)
