@@ -82,7 +82,7 @@ function findMatchingOldStatsProfileObject(
 
 function mergeProfile(oldProfile: ProfileStatsBase, newProfile: ProfileStatsBase): ProfileStatsBase {
     if (!ProfileStatsBase.isValid(newProfile)) {
-        if (ProfileStatsBase.isValid(newProfile)) {
+        if (ProfileStatsBase.isValid(oldProfile)) {
             const message = `Invalid stats object for @${newProfile?.username} on ${newProfile?.platformName} - using found old stats object`;
             // Return the old profile stats if the new profile is not valid and old profile is
             console.log(chalk.blue(message));
