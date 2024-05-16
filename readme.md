@@ -25,6 +25,7 @@ Typescript + Playwright system for gathering basic following and viewership stat
     - [x] Threads (Instagram)
     - [x] Facebook
     - [ ] Sketchfab (?)
+    - [ ] itch.io (?)
     - [ ] Reddit (?)
     - [ ] Cameo (?)
     - [ ] Billi Billi (?)
