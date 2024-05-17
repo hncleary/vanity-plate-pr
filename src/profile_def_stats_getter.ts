@@ -36,8 +36,7 @@ export async function profileStatsGetter(
     // Set user agent to prevent web scrape detection
     const context: BrowserContext = await browser.newContext({
         userAgent:
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' +
-            ' AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
     });
     /** Get the list of available profile definition JSON files*/
     let profileDefList: string[] = await getProfileDefJsonsList(inputDir);
