@@ -27,22 +27,23 @@ export async function getTwitterStatsArr(context: BrowserContext, handles: strin
                     headfulBrowser.close();
                 }
             }
-        } else {
-            // Attempt to get direct twitter data with a headful browser instance
-            if (!data.isValid()) {
-                const hasDisplay = await systemHasDisplay();
-                console.log('System Has Display: ' + hasDisplay);
-                if (hasDisplay) {
-                    const headfulBrowser = await chromium.launch({ headless: false });
-                    const headfulContext: BrowserContext = await headfulBrowser.newContext({
-                        userAgent:
-                            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-                    });
-                    data = await getTwitterStats(headfulContext, handle);
-                    headfulBrowser.close();
-                }
-            }
         }
+        // else {
+        //     // Attempt to get direct twitter data with a headful browser instance
+        //     if (!data.isValid()) {
+        //         const hasDisplay = await systemHasDisplay();
+        //         console.log('System Has Display: ' + hasDisplay);
+        //         if (hasDisplay) {
+        //             const headfulBrowser = await chromium.launch({ headless: false });
+        //             const headfulContext: BrowserContext = await headfulBrowser.newContext({
+        //                 userAgent:
+        //                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        //             });
+        //             data = await getTwitterStats(headfulContext, handle);
+        //             headfulBrowser.close();
+        //         }
+        //     }
+        // }
         stats.push(data);
     }
     return stats;

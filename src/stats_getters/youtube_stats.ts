@@ -27,7 +27,6 @@ export async function getYoutubeStats(context: BrowserContext, channelHandle: st
     stats.followerCount = getSubsFromPageContent(content);
     stats.iconUrl = await getImageUrlFromPageContent(content);
     stats.iconBase64 = await getBase64ImageFromUrl(stats.iconUrl);
-    getBase64AspectRatio(stats.iconBase64);
     stats.timeRetrieved = new Date().getTime();
     return stats;
 }
@@ -95,7 +94,7 @@ async function getImageUrlFromPageContent(htmlContent: string): Promise<string> 
             const backupimgRegex = /src="https:\/\/yt3[^>]*"/gm;
             imgMatches = htmlContent.match(backupimgRegex);
         }
-        const urls = imgMatches.map((match) => match.split('"')[1]);
+        const urls = imgMatches?.map((match) => match.split('"')[1]) ?? [];
         return await processImageUrls(urls);
     } catch (e) {
         console.error('Unable to get image url from page', e);
