@@ -86,7 +86,7 @@ export async function profileStatsGetter(
                     `-> Retrieved Stats for ${profile.id} in ${Math.ceil((timeEnd - timeStart) / 1000)} seconds`
                 )
             );
-            summaryList.push(getProfileStatsSummation(profile.id, profile.displayName, profileNewStats));
+            summaryList.push(getProfileStatsSummation(profile.id, profile.displayName, profileStats));
             profileCount++;
         }
     }
