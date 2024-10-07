@@ -74,16 +74,16 @@ export class VanityPlateProfileStats {
 
     public static getConcatStatsArray(profileStats: VanityPlateProfileStats): ProfileStatsBase[] {
         return [
-            ...profileStats.youtubeStats,
-            ...profileStats.instaStats,
-            ...profileStats.newgroundsStats,
-            ...profileStats.soundcloudStats,
-            ...profileStats.spotifyStats,
-            ...profileStats.threadsStats,
-            ...profileStats.tiktokStats,
-            ...profileStats.twitchStats,
-            ...profileStats.twitterStats,
-            ...profileStats.facebookStats,
+            ...(profileStats.youtubeStats ?? []),
+            ...(profileStats.instaStats ?? []),
+            ...(profileStats.newgroundsStats ?? []),
+            ...(profileStats.soundcloudStats ?? []),
+            ...(profileStats.spotifyStats ?? []),
+            ...(profileStats.threadsStats ?? []),
+            ...(profileStats.tiktokStats ?? []),
+            ...(profileStats.twitchStats ?? []),
+            ...(profileStats.twitterStats ?? []),
+            ...(profileStats.facebookStats ?? []),
         ];
     }
 

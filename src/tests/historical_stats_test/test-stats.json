@@ -1,0 +1,144 @@
+{
+    "id": "test",
+    "displayName": "Testing",
+    "youtubeStats": [
+        {
+            "platformName": "YouTube",
+            "timeRetrieved": 1715655309663,
+            "link": "https://www.youtube.com/@google/",
+            "displayName": "Google",
+            "username": "google",
+            "followerCount": 100,
+            "followerLabel": "Subscribers",
+            "followingCount": -1,
+            "iconBase64": "",
+            "iconUrl": "",
+            "totalViews": -1
+        }
+    ],
+    "instaStats": [
+        {
+            "platformName": "Instagram",
+            "timeRetrieved": 1715655315917,
+            "link": "https://www.instagram.com/zuck",
+            "displayName": "MarkZuckerberg",
+            "username": "zuck",
+            "followerCount": 1,
+            "followerLabel": "Followers",
+            "followingCount": -1,
+            "iconBase64": "",
+            "iconUrl": "",
+            "totalPosts": -1
+        }
+    ],
+    "threadsStats": [
+        {
+            "platformName": "Threads",
+            "timeRetrieved": 1715655325067,
+            "link": "https://www.threads.net/@zuck",
+            "displayName": "Mark Zuckerberg",
+            "username": "zuck",
+            "followerCount": 1,
+            "followerLabel": "Followers",
+            "followingCount": -1,
+            "iconBase64": "",
+            "iconUrl": ""
+        }
+    ],
+    "spotifyStats": [
+        {
+            "platformName": "Spotify",
+            "timeRetrieved": 1715655325966,
+            "link": "https://open.spotify.com/artist/3WrFJ7ztbogyGnTHbHJFl2",
+            "displayName": "The Beatles",
+            "username": "3WrFJ7ztbogyGnTHbHJFl2",
+            "followerCount": 1,
+            "followerLabel": "Monthly Listeners",
+            "followingCount": -1,
+            "iconBase64": "",
+            "iconUrl": "",
+            "artistId": "3WrFJ7ztbogyGnTHbHJFl2"
+        }
+    ],
+    "newgroundsStats": [
+        {
+            "platformName": "Newgrounds",
+            "timeRetrieved": 1715655330900,
+            "link": "https://tomfulp.newgrounds.com/fans",
+            "displayName": "TomFulp",
+            "username": "tomfulp",
+            "followerCount": 1,
+            "followerLabel": "Fans",
+            "followingCount": -1,
+            "iconBase64": "",
+            "iconUrl": "",
+            "newsCount": -1,
+            "moviesCount": -1,
+            "artCount": -1,
+            "audioCount": -1,
+            "gamesCount": -1,
+            "favesCount": -1,
+            "reviewsCount": -1,
+            "postsCount": -1
+        }
+    ],
+    "soundcloudStats": [
+        {
+            "platformName": "SoundCloud",
+            "timeRetrieved": 1715655337522,
+            "link": "https://soundcloud.com/soundcloud",
+            "displayName": "SoundCloud",
+            "username": "soundcloud",
+            "followerCount": 1,
+            "followerLabel": "Followers",
+            "followingCount": -1,
+            "iconBase64": "",
+            "iconUrl": "",
+            "tracks": -1
+        }
+    ],
+    "twitterStats": [
+        {
+            "platformName": "Twitter",
+            "timeRetrieved": 1715655343005,
+            "link": "https://twitter.com/elonmusk",
+            "displayName": "",
+            "username": "elonmusk",
+            "followerCount": 1,
+            "followerLabel": "Followers",
+            "followingCount": -1,
+            "iconBase64": "",
+            "iconUrl": "",
+            "totalTweets": -1
+        }
+    ],
+    "twitchStats": [
+        {
+            "platformName": "Twitch",
+            "timeRetrieved": 1715655350342,
+            "link": "https://www.twitch.tv/ninja",
+            "displayName": "Ninja",
+            "username": "ninja",
+            "followerCount": 1,
+            "followerLabel": "Followers",
+            "followingCount": -1,
+            "iconBase64": "",
+            "iconUrl": ""
+        }
+    ],
+    "tiktokStats": [
+        {
+            "platformName": "Tik Tok",
+            "timeRetrieved": 1715655357460,
+            "link": "https://www.tiktok.com/@khaby.lame?lang=en",
+            "displayName": "Khabane lame",
+            "username": "khaby.lame",
+            "followerCount": 1,
+            "followerLabel": "Followers",
+            "followingCount": -1,
+            "iconBase64": "",
+            "iconUrl": "",
+            "likes": -1
+        }
+    ]
+}

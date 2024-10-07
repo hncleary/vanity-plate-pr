@@ -17,6 +17,7 @@ import {
 import chalk = require('chalk');
 import { RASP_PI_CHROMIUM_PATH, isRaspberryPi } from './helper_functions/chromium_raspberry_pi';
 import { mergeStats } from './profile_data_process/merge_stats';
+import { addHistory } from './profile_data_process/add_history';
 
 export async function profileStatsGetter(
     inputDir: string = './profile-defs/',
@@ -76,6 +77,9 @@ export async function profileStatsGetter(
             } else {
                 profileStats = profileNewStats;
             }
+
+            // Create record of profile stats to allow for historical display
+            await addHistory(profile, profileStats, outputDir);
 
             // Write cumulative profile stats to .json
             await writeProfileStatsToJson(profile, profileStats, outputDir);

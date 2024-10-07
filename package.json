@@ -1,7 +1,7 @@
 {
     "scripts": {
         "main": "npx ts-node src/main.ts",
-        "test": "npx ts-node src/tests/test.ts && npm run test-merge-func",
+        "test": "npx ts-node src/tests/test.ts && npm run test-merge-func && npm run test-hist-func",
         "filtered-test": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/",
         "db": "npm run main ../vanity-plate-db/profile-defs/ ../vanity-plate-db/stats-v2/",
         "test-test": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ test",
@@ -16,7 +16,8 @@
         "test-tiktok": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ tiktok-test",
         "test-newgrounds": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ newgrounds-test",
         "test-facebook": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ facebook-test",
-        "test-merge-func": "npx ts-node src/tests/merge_stats_test/test_merge_stats.ts"
+        "test-merge-func": "npx ts-node src/tests/merge_stats_test/test_merge_stats.ts",
+        "test-hist-func": "npx ts-node src/tests/historical_stats_test/test_hist_stats.ts"
     },
     "dependencies": {
         "chalk": "^4.1.2",

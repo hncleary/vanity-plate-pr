@@ -3,3 +3,5 @@ node_modules/*
 *.html
 *db_summary.json
 !src/tests/merge_stats_test/*.json
+!src/tests/historical_stats_test/*.json
+src/tests/historical_stats_test/test-history.json

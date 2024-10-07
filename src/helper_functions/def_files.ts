@@ -2,7 +2,6 @@ import chalk = require('chalk');
 import {
     VanityPlateProfile,
     VanityPlateProfileStats,
-    VanityPlateSum,
     VanityPlateSumCollection,
 } from '../profile_data_process/profile_data';
 
