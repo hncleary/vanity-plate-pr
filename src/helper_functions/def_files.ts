@@ -66,7 +66,7 @@ export async function getProfileJsonDef(username: string, inputDir: string): Pro
     return profile;
 }
 
-/** Get a list of json files within the profile/defs directory */
+/** Get a list of profile json files within the profile/defs directory */
 export async function getProfileDefJsonsList(inputDir: string): Promise<string[]> {
     const dir = await fs.promises.opendir(inputDir);
     const fileNames: string[] = [];
@@ -74,6 +74,28 @@ export async function getProfileDefJsonsList(inputDir: string): Promise<string[]
         if (!dirent.name.includes('-stats.json') && dirent.name.includes('.json')) {
             fileNames.push(dirent.name);
         }
+    }
+    return fileNames;
+}
+
+/** Get a list of stats json files within the given directory */
+export async function getProfileStatsJsonsList(inputDir: string): Promise<string[]> {
+    const dir = await fs.promises.opendir(inputDir);
+    const fileNames: string[] = [];
+    for await (const dirent of dir) {
+        if (dirent.name.includes('-stats.json')) {
+            fileNames.push(dirent.name);
+        }
+    }
+    return fileNames;
+}
+
+/** Return a list of every file within a given directory (folders are files) */
+export async function getDirectoryFilesList(path: string): Promise<string[]> {
+    const dir = await fs.promises.opendir(path);
+    const fileNames: string[] = [];
+    for await (const dirent of dir) {
+        fileNames.push(dirent.name);
     }
     return fileNames;
 }

@@ -41,9 +41,9 @@ function addHistoryFromAccountStat(
         (h) => h.platformName === account.platformName && h.username === account.username && h.countUnits == countUnits
     );
     // default to follower count
-    let count = new HistoryEntry(account.followerCount);
+    let count = new HistoryEntry(account.followerCount, account.timeRetrieved);
     if (countUnits == CountUnit.Views) {
-        count = new HistoryEntry((account as YoutubeStats).totalViews);
+        count = new HistoryEntry((account as YoutubeStats).totalViews, account.timeRetrieved);
     }
     if (!f) {
         const histObj: HistoryIndex = new HistoryIndex(account.platformName, account.username, countUnits);
@@ -57,10 +57,20 @@ function addHistoryFromAccountStat(
 
 function addCountToHistoryEntries(historicalCounts: HistoryEntry[], count: HistoryEntry): HistoryEntry[] {
     historicalCounts = sortHistoricalCounts(historicalCounts);
+    // negative values are invalid for history
+    if (count.count < 0) {
+        return historicalCounts;
+    }
+    // Don't push the count if the timestamp its associated with already exists in the history document
+    const timestampAlreadyExists = !!historicalCounts.find((c) => c.timestamp == count.timestamp);
+    if (timestampAlreadyExists) {
+        return historicalCounts;
+    }
     // Only push the latest count retrieved if it differs from the last recorded count (no need for duplicates)
     const lastCount = historicalCounts[historicalCounts.length - 1];
-    if (!lastCount || lastCount.count != count.count) {
+    if (!lastCount || count.timestamp < lastCount.timestamp || lastCount.count != count.count) {
         historicalCounts.push(count);
+        historicalCounts = sortHistoricalCounts(historicalCounts);
     } else {
         console.log(chalk.blue(`Not adding to history. ${count.count} matches the last recorded value`));
     }
@@ -91,9 +101,9 @@ export class HistoryIndex {
 export class HistoryEntry {
     public count: number = 0;
     public timestamp: number = -1;
-    constructor(count: number) {
+    constructor(count: number, timestamp: number) {
         this.count = count;
-        this.timestamp = new Date().getTime();
+        this.timestamp = timestamp;
     }
 }
 
