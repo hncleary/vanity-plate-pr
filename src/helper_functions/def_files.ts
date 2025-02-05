@@ -44,6 +44,16 @@ export async function writeSummaryCollectionToJson(
     });
 }
 
+export async function getSummaryCollectionFromFile(outputDir: string): Promise<VanityPlateSumCollection> {
+    const json = await getFileContents(`${outputDir}/db_summary.json`);
+    if (!!json) {
+        const collection: VanityPlateSumCollection = JSON.parse(json);
+        return !!collection.timeRetrieved ? collection : undefined;
+    } else {
+        return undefined;
+    }
+}
+
 /** If a stats json exists for the referenced user in the ouput directory, return the parsed data object */
 export async function getProfileStatsJsonData(
     username: string,
