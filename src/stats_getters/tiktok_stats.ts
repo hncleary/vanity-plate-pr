@@ -1,5 +1,6 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
+import { createStealthPage, stealthNavigate } from '../helper_functions/stealth_browser';
 import { TiktokStats } from './stats_defs';
 
 export async function getTikTokStatsArr(context: BrowserContext, usernames: string[]): Promise<TiktokStats[]> {
@@ -30,10 +31,9 @@ export async function getTikTokStats(context: BrowserContext, username: string):
 }
 
 async function getPageContent(context: BrowserContext, username: string): Promise<string> {
-    const page: Page = await context.newPage();
+    const page: Page = await createStealthPage(context);
     const url = `https://www.tiktok.com/@${username}?lang=en`;
-    await page.goto(url);
-    await page.waitForTimeout(5000);
+    await stealthNavigate(page, url, 5000);
     const content = await page.content();
     await page.close();
     if (!content) {

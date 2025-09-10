@@ -1,5 +1,6 @@
 import { BrowserContext, Page } from 'playwright';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
+import { createStealthPage, stealthNavigate } from '../helper_functions/stealth_browser';
 import { SoundCloudStats } from './stats_defs';
 
 export async function getSoundcloudStatsArr(context: BrowserContext, usernames: string[]): Promise<SoundCloudStats[]> {
@@ -28,10 +29,9 @@ export async function getSoundcloudStats(context: BrowserContext, username: stri
 }
 
 async function getSoundCloudPageContent(context: BrowserContext, username: string) {
-    const page: Page = await context.newPage();
+    const page: Page = await createStealthPage(context);
     const url = `https://soundcloud.com/${username}`;
-    await page.goto(url);
-    await page.waitForTimeout(5000);
+    await stealthNavigate(page, url, 5000);
     const content = await page.content();
     await page.close();
     return content;

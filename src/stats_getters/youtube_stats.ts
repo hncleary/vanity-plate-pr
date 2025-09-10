@@ -1,6 +1,7 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
+import { createStealthPage, stealthNavigate } from '../helper_functions/stealth_browser';
 import { YoutubeStats } from './stats_defs';
 import { getBase64AspectRatio } from '../helper_functions/base64_aspect_ratio';
 
@@ -33,11 +34,10 @@ export async function getYoutubeStats(context: BrowserContext, channelHandle: st
 
 /** Retrieve the HTML content on a youtube channel page */
 async function getYoutubePageContent(context: BrowserContext, urlExtension: string): Promise<string> {
-    const page: Page = await context.newPage();
+    const page: Page = await createStealthPage(context);
     const baseUrl = 'https://www.youtube.com';
     const fullUrl = baseUrl + urlExtension;
-    await page.goto(fullUrl);
-    await page.waitForTimeout(3000);
+    await stealthNavigate(page, fullUrl, 3000);
     const content = await page.content();
     await page.close();
     return content;

@@ -1,6 +1,7 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
+import { createStealthPage, stealthNavigate } from '../helper_functions/stealth_browser';
 import { TwitchStats } from './stats_defs';
 
 export async function getTwitchStatsArr(context: BrowserContext, handles: string[]): Promise<TwitchStats[]> {
@@ -26,10 +27,9 @@ export async function getTwitchStats(context: BrowserContext, username: string):
 }
 
 async function getPageContent(context: BrowserContext, username: string): Promise<string> {
-    const page: Page = await context.newPage();
+    const page: Page = await createStealthPage(context);
     const url = `https://www.twitch.tv/${username}`;
-    await page.goto(url);
-    await page.waitForTimeout(5000);
+    await stealthNavigate(page, url, 5000);
     const content = await page.content();
     await page.close();
     return content;

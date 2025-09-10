@@ -2,6 +2,7 @@ import { BrowserContext, Page } from 'playwright';
 import { ThreadsStats } from './stats_defs';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
+import { createStealthPage, stealthNavigate } from '../helper_functions/stealth_browser';
 import chalk = require('chalk');
 
 /** Get an array of objects containing threads info and statistics given a browser context and account @'s */
@@ -39,9 +40,8 @@ export async function getThreadsStats(context: BrowserContext, username: string)
 
 /** Retrieve the HTML content on a threads account page */
 async function getThreadsPageContent(context: BrowserContext, url: string) {
-    const page: Page = await context.newPage();
-    await page.goto(url);
-    await page.waitForTimeout(5000);
+    const page: Page = await createStealthPage(context);
+    await stealthNavigate(page, url, 5000);
     const content = await page.content();
     await page.close();
     return content;

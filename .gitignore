@@ -1,5 +1,6 @@
 node_modules/*
 *-stats.json
+*-history.json
 *.html
 *db_summary.json
 !src/tests/merge_stats_test/*.json

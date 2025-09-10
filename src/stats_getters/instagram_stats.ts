@@ -1,6 +1,7 @@
 import { BrowserContext, Page, chromium } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
+import { createStealthPage, stealthNavigate } from '../helper_functions/stealth_browser';
 import chalk = require('chalk');
 import { InstagramStats } from './stats_defs';
 
@@ -73,13 +74,10 @@ export async function getInstagramStats(
 
 /** Retrieve the HTML content on a instagram account page */
 async function getInstagramPageContent(context: BrowserContext, urlExtension: string): Promise<string> {
-    const page: Page = await context.newPage();
+    const page: Page = await createStealthPage(context);
     const baseUrl = 'https://www.instagram.com';
     const fullUrl = baseUrl + urlExtension;
-    await page.goto(fullUrl);
-    // Find selector to await if issues arise with this part of the code (?)
-    // await page.waitForSelector('main')
-    await page.waitForTimeout(5000);
+    await stealthNavigate(page, fullUrl, 5000);
     const content = await page.content();
     await page.close();
     return content;

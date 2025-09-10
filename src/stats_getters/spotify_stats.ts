@@ -1,5 +1,6 @@
 import { BrowserContext, Page } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
+import { createStealthPage, stealthNavigate } from '../helper_functions/stealth_browser';
 import { SpotifyStats } from './stats_defs';
 const fs = require('fs'); // Built-in filesystem package for Node.j
 
@@ -29,9 +30,9 @@ export async function getSpotifyStats(context: BrowserContext, artistId: string)
 }
 
 async function getSpotifyPageContent(context: BrowserContext, artistId: string): Promise<string> {
-    const page: Page = await context.newPage();
+    const page: Page = await createStealthPage(context);
     const url: string = `https://open.spotify.com/artist/${artistId}`;
-    await page.goto(url);
+    await stealthNavigate(page, url, 3000);
     const content = await page.content();
     await page.close();
     return content;

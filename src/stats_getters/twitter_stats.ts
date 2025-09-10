@@ -2,6 +2,7 @@ import { BrowserContext, Page, chromium } from 'playwright';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
 import { systemHasDisplay } from '../helper_functions/has_display';
+import { createStealthPage, stealthNavigate } from '../helper_functions/stealth_browser';
 import { TwitterStats } from './stats_defs';
 
 export const NITTER_ENABLED = false;
@@ -65,10 +66,9 @@ export async function getTwitterStats(context: BrowserContext, handle: string): 
 }
 
 async function getPageContent(context: BrowserContext, handle: string): Promise<string> {
-    const page: Page = await context.newPage();
+    const page: Page = await createStealthPage(context);
     const url = `https://twitter.com/${handle}`;
-    await page.goto(url);
-    await page.waitForTimeout(5000);
+    await stealthNavigate(page, url, 5000);
     const content = await page.content();
     await page.close();
     return content;
@@ -151,11 +151,10 @@ export async function getNitterStats(context: BrowserContext, handle: string): P
 }
 
 async function getNitterPageContent(context: BrowserContext, handle: string): Promise<string> {
-    const page: Page = await context.newPage();
+    const page: Page = await createStealthPage(context);
     // const url = `https://nitter.net/${handle}`;
     const url = `https://nitter.poast.org/${handle}`;
-    await page.goto(url);
-    await page.waitForTimeout(10000);
+    await stealthNavigate(page, url, 10000);
     const content = await page.content();
     await page.close();
     return content;

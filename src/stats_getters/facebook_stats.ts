@@ -2,6 +2,7 @@ import { BrowserContext, Page } from 'playwright';
 import { FacebookStats } from './stats_defs';
 import { getBase64ImageFromUrl } from '../helper_functions/base64_url_img_fetch';
 import { convertAbbreviateNumberStr } from '../helper_functions/abbrev_num_convert';
+import { createStealthPage, stealthNavigate } from '../helper_functions/stealth_browser';
 import chalk = require('chalk');
 
 /** Get an array of objects containing facebook info and statistics given a browser context and account @'s */
@@ -23,7 +24,6 @@ export async function getFacebookStats(
 ): Promise<FacebookStats> {
     try {
         const content: string = await getFacebookPageContent(context, username);
-
         const stats = new FacebookStats();
         stats.timeRetrieved = new Date().getTime();
         stats.link = `https://www.facebook.com/${username}`;
@@ -31,7 +31,6 @@ export async function getFacebookStats(
         stats.username = username;
         // stats.totalPosts = getPostCountFromContent(content);
         stats.followerCount = getFollowerCountFromContent(content);
-        stats.followingCount = getFollowingCountFromContent(content);
         stats.iconUrl = getIconUrlFromContent(content);
         stats.iconBase64 = await getBase64ImageFromUrl(stats.iconUrl);
 
@@ -65,13 +64,10 @@ export async function getFacebookStats(
 }
 
 async function getFacebookPageContent(context: BrowserContext, username: string): Promise<string> {
-    const page: Page = await context.newPage();
+    const page: Page = await createStealthPage(context);
     const baseUrl = 'https://www.facebook.com';
     const url = `https://www.facebook.com/${username}`;
-    await page.goto(url);
-    // Find selector to await if issues arise with this part of the code (?)
-    // await page.waitForSelector('main')
-    await page.waitForTimeout(5000);
+    await stealthNavigate(page, url, 5000);
     const content = await page.content();
     await page.close();
     return content;
@@ -88,26 +84,20 @@ function getDisplayNameFromContent(content: string): string {
 }
 
 function getFollowerCountFromContent(content: string): number {
-    const regex = />[^<]* followers<\/a>/gm;
+    // Look for the JSON structure containing follower count
+    const regex = /"text":"([^"]*followers[^"]*)"/gm;
     const matches = content.match(regex);
     if (!!matches) {
         for (const match of matches) {
-            const txt = match.split('>')[1].split('followers<')[0];
-            const followerCount = convertAbbreviateNumberStr(txt);
-            return followerCount;
-        }
-    }
-    return -1;
-}
-
-function getFollowingCountFromContent(content: string): number {
-    const regex = />[^<]* following<\/a>/gm;
-    const matches = content.match(regex);
-    if (!!matches) {
-        for (const match of matches) {
-            const txt = match.split('>')[1].split('following<')[0];
-            const followerCount = convertAbbreviateNumberStr(txt);
-            return followerCount;
+            const textMatch = match.match(/"text":"([^"]*followers[^"]*)"/);
+            if (textMatch && textMatch[1]) {
+                const followerText = textMatch[1];
+                // Extract the number part before "followers"
+                const numberMatch = followerText.match(/([0-9.]+[KMB]?)\s*followers/i);
+                if (numberMatch && numberMatch[1]) {
+                    return convertAbbreviateNumberStr(numberMatch[1]);
+                }
+            }
         }
     }
     return -1;
