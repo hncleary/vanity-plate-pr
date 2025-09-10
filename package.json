@@ -21,7 +21,10 @@
         "test-merge-func": "npx ts-node src/tests/merge_stats_test/test_merge_stats.ts",
         "test-hist-func": "npx ts-node src/tests/historical_stats_test/test_hist_stats.ts",
         "hist-files-func": "npx ts-node src/scripts/parse_historical_files.ts",
-        "clear-history": "npx ts-node src/scripts/clear_history_files.ts"
+        "clear-history": "npx ts-node src/scripts/clear_history_files.ts",
+        "concurrent-test": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ test 5 1000",
+        "concurrent-db": "npx ts-node src/main.ts ../vanity-plate-db/profile-defs/ ../vanity-plate-db/stats-v2/ - 5 1000",
+        "concurrent-db-push": "npm run concurrent-db && npm run db-push"
     },
     "dependencies": {
         "chalk": "^4.1.2",

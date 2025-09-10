@@ -22,7 +22,9 @@ import { addHistory } from './profile_data_process/add_history';
 export async function profileStatsGetter(
     inputDir: string = './profile-defs/',
     outputDir: string = './profile-defs/',
-    specifiedProfile: string = ''
+    specifiedProfile: string = '',
+    concurrentLimit: number = 3,
+    batchDelay: number = 2000
 ) {
     if (!!specifiedProfile) {
         console.log('Specified profile: ' + specifiedProfile);
@@ -112,56 +114,100 @@ export async function profileStatsGetter(
     /** Shuffle the list of available profile definitions so that the retrieved order is different each time */
     profileDefList = profileDefList.sort((a, b) => 0.5 - Math.random());
     /** Filter out any profile defs that don't match the specified profile (if there is one specified) */
-    if (!!specifiedProfile) {
+    if (specifiedProfile && specifiedProfile.trim() !== '' && specifiedProfile !== '-') {
         profileDefList = profileDefList.filter((p) => p == `${specifiedProfile}.json`);
     }
     const summaryList: VanityPlateSum[] = [];
     // Get the time at which the total process started
     const totalStartTime = new Date().getTime();
-    // Set count for total number of profiles processed
-    let profileCount = 0;
-    for (const profileJson of profileDefList) {
-        // Parse profile object from JSON file
-        const json: string = await getFileContents(`${inputDir}${profileJson}`);
-        const profile: VanityPlateProfile = JSON.parse(json);
-        // Fetch social stats for profile
-        if (!!profile.id) {
-            // Get the time at which the process for this user started
-            const timeStart = new Date().getTime();
-            console.log(`[[Getting stats for ${profile.id}]]`);
 
-            let profileStats: VanityPlateProfileStats = new VanityPlateProfileStats();
-            const profileNewStats: VanityPlateProfileStats = await getProfileStats(context, profile);
+    // Configuration for concurrent processing
+    const CONCURRENT_LIMIT = concurrentLimit; // Process profiles concurrently to avoid overwhelming websites
+    const BATCH_DELAY = batchDelay; // Delay between batches to be respectful to websites
 
-            // Validate retrieved stats to ensure that database doesn't regress (values should not be set to default -1 or 0 on error), user old profile stats if new stats are not valid
-            VanityPlateProfileStats.printAll(profileNewStats);
-            let profileOldStats: VanityPlateProfileStats | undefined = await getProfileStatsJsonData(
-                profile.id,
-                outputDir
-            );
-            if (!!profileOldStats) {
-                profileOldStats = VanityPlateProfileStats.rawToObject(profileOldStats);
-                profileStats = mergeStats(profileOldStats, profileNewStats);
-            } else {
-                profileStats = profileNewStats;
+    console.log(chalk.cyan(`Starting concurrent processing with limit of ${CONCURRENT_LIMIT} profiles at a time`));
+
+    // Process profiles in batches for controlled concurrency
+    for (let i = 0; i < profileDefList.length; i += CONCURRENT_LIMIT) {
+        const batch = profileDefList.slice(i, i + CONCURRENT_LIMIT);
+        console.log(
+            chalk.blue(
+                `Processing batch ${Math.floor(i / CONCURRENT_LIMIT) + 1}/${Math.ceil(
+                    profileDefList.length / CONCURRENT_LIMIT
+                )} (${batch.length} profiles)`
+            )
+        );
+
+        // Process batch concurrently
+        const batchPromises = batch.map(async (profileJson) => {
+            try {
+                // Parse profile object from JSON file
+                const json: string = await getFileContents(`${inputDir}${profileJson}`);
+                const profile: VanityPlateProfile = JSON.parse(json);
+
+                // Fetch social stats for profile
+                if (!!profile.id) {
+                    // Get the time at which the process for this user started
+                    const timeStart = new Date().getTime();
+                    console.log(`[[Getting stats for ${profile.id}]]`);
+
+                    let profileStats: VanityPlateProfileStats = new VanityPlateProfileStats();
+                    const profileNewStats: VanityPlateProfileStats = await getProfileStats(context, profile);
+
+                    // Validate retrieved stats to ensure that database doesn't regress (values should not be set to default -1 or 0 on error), user old profile stats if new stats are not valid
+                    VanityPlateProfileStats.printAll(profileNewStats);
+                    let profileOldStats: VanityPlateProfileStats | undefined = await getProfileStatsJsonData(
+                        profile.id,
+                        outputDir
+                    );
+                    if (!!profileOldStats) {
+                        profileOldStats = VanityPlateProfileStats.rawToObject(profileOldStats);
+                        profileStats = mergeStats(profileOldStats, profileNewStats);
+                    } else {
+                        profileStats = profileNewStats;
+                    }
+
+                    // Create record of profile stats to allow for historical display
+                    await addHistory(profile, profileStats, outputDir);
+
+                    // Write cumulative profile stats to .json
+                    await writeProfileStatsToJson(profile, profileStats, outputDir);
+
+                    // Get the time at which the process for this user ended
+                    const timeEnd = new Date().getTime();
+                    console.log(
+                        chalk.green(
+                            `-> Retrieved Stats for ${profile.id} in ${Math.ceil((timeEnd - timeStart) / 1000)} seconds`
+                        )
+                    );
+
+                    return getProfileStatsSummation(profile.id, profile.displayName, profileStats);
+                }
+                return null;
+            } catch (error) {
+                console.error(chalk.red(`Error processing profile ${profileJson}: ${error}`));
+                return null;
             }
+        });
 
-            // Create record of profile stats to allow for historical display
-            await addHistory(profile, profileStats, outputDir);
+        // Wait for all profiles in the batch to complete
+        const batchResults = await Promise.all(batchPromises);
 
-            // Write cumulative profile stats to .json
-            await writeProfileStatsToJson(profile, profileStats, outputDir);
-            // Get the time at which the process for this user ended
-            const timeEnd = new Date().getTime();
-            console.log(
-                chalk.green(
-                    `-> Retrieved Stats for ${profile.id} in ${Math.ceil((timeEnd - timeStart) / 1000)} seconds`
-                )
-            );
-            summaryList.push(getProfileStatsSummation(profile.id, profile.displayName, profileStats));
-            profileCount++;
+        // Add successful results to summary list
+        batchResults.forEach((result) => {
+            if (result) {
+                summaryList.push(result);
+            }
+        });
+
+        // Add delay between batches to be respectful to websites
+        if (i + CONCURRENT_LIMIT < profileDefList.length) {
+            console.log(chalk.yellow(`Waiting ${BATCH_DELAY / 1000} seconds before next batch...`));
+            await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY));
         }
     }
+
+    const profileCount = summaryList.length;
     // Get the time at which the total process ended
     const totalEndTime = new Date().getTime();
     const seconds = Math.ceil((totalEndTime - totalStartTime) / 1000);
