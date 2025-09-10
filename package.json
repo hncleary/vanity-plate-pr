@@ -5,7 +5,7 @@
         "filtered-test": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/",
         "db": "npm run main ../vanity-plate-db/profile-defs/ ../vanity-plate-db/stats-v2/",
         "db-push": "npx ts-node src/scripts/push_db.ts",
-        "db-update": "npm run db && npm run db-push",
+        "db-update": "npx ts-node src/main.ts ../vanity-plate-db/profile-defs/ ../vanity-plate-db/stats-v2/ - 1 0 && npm run db-push",
         "test-test": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ test",
         "test-all": "npm run test-twitter && npm run test-instagram && npm run test-youtube && npm run test-spotify && npm run test-soundcloud && npm run test-twitch && npm run test-tiktok && npm run test-newgrounds && npm run test-facebook",
         "test-twitter": "npx ts-node src/main.ts ./profile-defs/ ./profile-defs/ twitter-test",
